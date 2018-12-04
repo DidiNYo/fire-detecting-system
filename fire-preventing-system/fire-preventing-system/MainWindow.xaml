@@ -5,22 +5,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fire_preventing_system"
-                      xmlns:xaml="clr-namespace:Mapsui.UI.Wpf;assembly=Mapsui.UI.Wpf"
-                      mc:Ignorable="d"
-        Title="Fire Preventing System" Height="750" Width="1150"
-        BorderBrush="{DynamicResource AccentColorBrush}"
-        BorderThickness="1">
-   
+        xmlns:xaml="clr-namespace:Mapsui.UI.Wpf;assembly=Mapsui.UI.Wpf"
+        mc:Ignorable="d"
+        Title="Fire Preventing System" 
+        WindowState = "Maximized"
+        WindowStyle = "None">
 
     <Grid>
-        <TabControl HorizontalAlignment="Center" Width="1100">
-            <TabItem Header="Visualise Sensors" FontSize="22">
+        <!--Main Tabs-->
+        <TabControl HorizontalAlignment="Stretch" Margin="5" Controls:TabControlHelper.Underlined="TabPanel">
+            <TabItem Header="Visualize Sensors">
+                <!--Initialize Map-->
                 <xaml:MapControl Name="MyMapControl"></xaml:MapControl>
             </TabItem>
             <TabItem Header="Settings" />
             <TabItem Header="Define Alarms" />
             <TabItem Header="History" />
         </TabControl>
+        <!--Main Tabs-->
     </Grid>
 </Controls:MetroWindow>
     
