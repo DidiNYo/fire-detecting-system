@@ -12,17 +12,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BruTile.Predefined;
+using MahApps.Metro.Controls;
+using Mapsui.Layers;
 
 namespace fire_preventing_system
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow 
     {
         public MainWindow()
-        {
+        {           
             InitializeComponent();
+            MyMapControl.Map.Layers.Add(new TileLayer(KnownTileSources.Create()));
         }
     }
 }
