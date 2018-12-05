@@ -6,33 +6,35 @@ using Mapsui.Styles;
 using Mapsui.UI;
 using Mapsui.Utilities;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fire_preventing_system
 {
     class SensorsPoints
     {
+        //Initialize the map. Map type is IMapControl
         public void Setup(IMapControl mapControl)
         {
             mapControl.Map = CreateMap();
         }
 
-        public static Map CreateMap()
+        //Creates the map with the layers needed.
+        private static Map CreateMap()
         {
-            var map = new Map();
+            Map map = new Map();
 
             map.Layers.Add(OpenStreetMap.CreateTileLayer());
             map.Layers.Add(CreatePointLayer());
-            map.Home = n => n.NavigateTo(map.Layers[1].Envelope.Centroid, map.Resolutions[5]);
+
+            //Settings of the starting map position. I think.
+            map.Home = n => n.NavigateTo(map.Layers[1].Envelope.Centroid, map.Resolutions[5]); 
             return map;
         }
 
+        //Creates a layer with cities.
         private static MemoryLayer CreatePointLayer()
         {
             return new MemoryLayer
@@ -44,12 +46,18 @@ namespace fire_preventing_system
             };
         }
 
+
+        //This method reads JSON objects from the test.json and calls the deserialize method.
         private static IEnumerable<IFeature> GetCitiesFromEmbeddedResource()
         {
-            string path = "fire-preventing-system.test.json";
-            var assembly = typeof(SensorsPoints).GetTypeInfo().Assembly;
-            var stream = assembly.GetManifestResourceStream(path);
-            var cities = DeserializeFromStream<City>(stream);
+            //Path of the file. Need to be set to embedded resource. Name is "namespace-name.file-name.json"
+            string path = "fire_preventing_system.Resources.test.json"; 
+            //Assembly - takes the current project.
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            //Creates a stream.
+            Stream stream = assembly.GetManifestResourceStream(path);
+            
+            IEnumerable<City> cities = DeserializeFromStream<City>(stream);
 
             return cities.Select(c =>
             {
@@ -62,20 +70,13 @@ namespace fire_preventing_system
             });
         }
 
-        private class City
-        {
-            public string Country { get; set; }
-            public string Name { get; set; }
-            public double Lat { get; set; }
-            public double Lng { get; set; }
-        }
-
+        //This method deserialize the JSON objects from the file to objects readable from C# and returns a list of them.
         public static IEnumerable<T> DeserializeFromStream<T>(Stream stream)
         {
             var serializer = new JsonSerializer();
 
-            using (var sr = new StreamReader(stream))
-            using (var jsonTextReader = new JsonTextReader(sr))
+            using (StreamReader sr = new StreamReader(stream))
+            using (JsonTextReader jsonTextReader = new JsonTextReader(sr))
             {
                 return serializer.Deserialize<List<T>>(jsonTextReader);
             }
@@ -83,19 +84,16 @@ namespace fire_preventing_system
 
         private static SymbolStyle CreateBitmapStyle()
         {
-            // For this sample we get the bitmap from an embedded resouce
-            // but you could get the data stream from the web or anywhere
-            // else.
-            var path = "fire-preventing-system.fire-preventing-system.fire-preventing-system.Resources.circle.jpg"; 
-            var bitmapId = GetBitmapIdForEmbeddedResource(path);
-            var bitmapHeight = 176; // To set the offset correct we need to know the bitmap height
-            return new SymbolStyle { BitmapId = bitmapId, SymbolScale = 0.20, SymbolOffset = new Offset(0, bitmapHeight * 0.5) };
-        }
+            string path = "fire_preventing_system.Resources.pin.png"; //Image file. Embedded resource again.
+            int bitmapId = GetBitmapIdForEmbeddedResource(path);
+            return new SymbolStyle { BitmapId = bitmapId, SymbolScale = 1, SymbolOffset = new Offset(0, 0) }; //Setings of the image.
+        } 
 
         private static int GetBitmapIdForEmbeddedResource(string imagePath)
         {
-            var assembly = typeof(SensorsPoints).GetTypeInfo().Assembly;
-            var image = assembly.GetManifestResourceStream(imagePath);
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Stream image = assembly.GetManifestResourceStream(imagePath);
+            
             return BitmapRegistry.Instance.Register(image);
         }
     }

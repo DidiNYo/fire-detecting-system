@@ -16,7 +16,7 @@
         <TabControl HorizontalAlignment="Stretch" Margin="5" Controls:TabControlHelper.Underlined="TabPanel">
             <TabItem Header="Visualize Sensors">
                 <!--Initialize Map-->
-                <xaml:MapControl Name="MyMapControl"></xaml:MapControl>
+                <xaml:MapControl Name="MainMap"></xaml:MapControl>
             </TabItem>
             <TabItem Header="Settings" />
             <TabItem Header="Define Alarms" />

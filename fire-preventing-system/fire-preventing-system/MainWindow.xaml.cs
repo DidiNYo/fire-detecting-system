@@ -8,11 +8,12 @@ namespace fire_preventing_system
         public MainWindow()
         {           
             InitializeComponent();
-            //Initialize map
-            SensorsPoints point = new SensorsPoints();
-            point.Setup(MyMapControl);
+            
+            //Example with cities.
+            SensorsPoints points = new SensorsPoints();
 
-            //MyMapControl.Map.Layers.Add(new TileLayer(KnownTileSources.Create()));
+            //MainMap - name of the map. Defined in MainWindow.xaml
+            points.Setup(MainMap);           
         }
     }
 }
