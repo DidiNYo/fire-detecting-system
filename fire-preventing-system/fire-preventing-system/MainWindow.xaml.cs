@@ -9,7 +9,10 @@ namespace fire_preventing_system
         {           
             InitializeComponent();
             //Initialize map
-            MyMapControl.Map.Layers.Add(new TileLayer(KnownTileSources.Create()));
+            SensorsPoints point = new SensorsPoints();
+            point.Setup(MyMapControl);
+
+            //MyMapControl.Map.Layers.Add(new TileLayer(KnownTileSources.Create()));
         }
     }
 }
