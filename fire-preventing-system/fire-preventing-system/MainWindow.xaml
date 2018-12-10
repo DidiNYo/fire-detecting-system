@@ -14,15 +14,23 @@
     <Grid>
         <!--Main Tabs-->
         <TabControl HorizontalAlignment="Stretch" Margin="5" Controls:TabControlHelper.Underlined="TabPanel">
-            <TabItem Header="Visualize Sensors">
+            <TabItem Header="Visualize Sensors" Padding="15,2">
                 <!--Initialize Map-->
                 <xaml:MapControl Name="MainMap"></xaml:MapControl>
             </TabItem>
-            <TabItem Header="Settings" />
-            <TabItem Header="Define Alarms" />
-            <TabItem Header="History" />
+            <TabItem Header="Settings" Padding="15,2">
+                <Canvas>
+                    <TextBox Width="98.44"  FontSize="24" Name="XCoord" Text="XCoord" Canvas.Left="1.56"/>
+                    <TextBox Width="100px"  FontSize="24" Name="YCoord" Text="YCoord" Canvas.Top="44.923" Canvas.Left="1.56"/>
+                    <Button Click="Btn_ClickSaveCoords" Content="Save Coords" Canvas.Left="1.56" Canvas.Top="89.846" Width="99.999" Height="30.633"/>
+                </Canvas>
+            </TabItem>
+            <TabItem Header="Define Alarms" Padding="15,2"/>
+            <TabItem Header="History" Padding="15,2"/>
         </TabControl>
         <!--Main Tabs-->
     </Grid>
+
+
 </Controls:MetroWindow>
     
