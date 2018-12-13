@@ -5,7 +5,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace fire_preventing_system
+namespace fire_detecting_system
 {
     public partial class MainWindow 
     {

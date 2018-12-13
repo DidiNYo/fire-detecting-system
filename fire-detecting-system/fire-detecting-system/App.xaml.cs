@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace fire_preventing_system
+namespace fire_detecting_system
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace fire_preventing_system
+namespace fire_detecting_system
 {
     class SensorsPoints
     {
@@ -51,7 +51,7 @@ namespace fire_preventing_system
         private static IEnumerable<IFeature> GetCitiesFromEmbeddedResource()
         {
             //Path of the file. Need to be set to embedded resource. Name is "namespace-name.file-name.json"
-            string path = "fire_preventing_system.Resources.test.json"; 
+            string path = "fire_detecting_system.Resources.test.json"; 
             //Assembly - takes the current project.
             Assembly assembly = Assembly.GetExecutingAssembly();
             //Creates a stream.
@@ -84,7 +84,7 @@ namespace fire_preventing_system
 
         private static SymbolStyle CreateBitmapStyle()
         {
-            string path = "fire_preventing_system.Resources.pin.png"; //Image file. Embedded resource again.
+            string path = "fire_detecting_system.Resources.pin.png"; //Image file. Embedded resource again.
             int bitmapId = GetBitmapIdForEmbeddedResource(path);
             return new SymbolStyle { BitmapId = bitmapId, SymbolScale = 1, SymbolOffset = new Offset(0, 0) }; //Setings of the image.
         } 

@@ -1,4 +1,4 @@
-﻿namespace fire_preventing_system
+﻿namespace fire_detecting_system
 {
     class City
     {

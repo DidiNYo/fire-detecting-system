@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace fire_preventing_system.Properties
+namespace fire_detecting_system.Properties
 {
 
 
