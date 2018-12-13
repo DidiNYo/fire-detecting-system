@@ -1,1 +1,1 @@
-# fire-preventing-system
+# fire-detecting-system
