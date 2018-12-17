@@ -1,4 +1,5 @@
 ﻿using BruTile.Predefined;
+using fire_detecting_system.Models;
 using Mapsui.Layers;
 using Mapsui.Projection;
 using System;
@@ -9,6 +10,8 @@ namespace fire_detecting_system
 {
     public partial class MainWindow 
     {
+        MainModel main_model = new MainModel(); 
+
         public MainWindow()
         {
             InitializeComponent();
@@ -18,24 +21,24 @@ namespace fire_detecting_system
 
             //MainMap - name of the map. Defined in MainWindow.xaml
             points.Setup(MainMap);
+
+            //Set main_model to be source for the DataContext property
+            DataContext = main_model;
         }
 
         private void Btn_ClickSaveCoords(object sender, System.Windows.RoutedEventArgs e)
         {
-            //We need to cast the sender as a XAML button element to get acces to its attributes
-            var userCoordinates = sender as Button;
-            var x_coord = Convert.ToDouble(userCoordinates.Tag.ToString());
-            var y_coord = Convert.ToDouble(userCoordinates.DataContext.ToString());
+            var x_coord = Convert.ToDouble(main_model.Coords.X_coordinate);
+            var y_coord = Convert.ToDouble(main_model.Coords.Y_coordinate);
 
-
-            //We need to transfer from one coordinate reference system to another - from CRS to CRS
             MainMap.Map.Transformation = new MinimalTransformation();
 
+            //We need to transfer from one coordinate reference system to another - from CRS to CRS
             //Mapsui.Geometries.Point(x, y); where x is the X-axis(E-coord) and y is the Y-axis(N-coord)
             var point = (Mapsui.Geometries.Point)(MainMap.Map.Transformation.Transform("EPSG:4326", "EPSG:3857", new Mapsui.Geometries.Point(x_coord,y_coord)));
 
             //Map is centered with coordinates provided by the user
-            MainMap.Navigator.CenterOn(new Mapsui.Geometries.Point(point.X, point.Y));
+            MainMap.Navigator.NavigateTo(new Mapsui.Geometries.Point(point.X, point.Y), 19);
         }
 
 
