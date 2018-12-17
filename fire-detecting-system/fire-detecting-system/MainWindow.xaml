@@ -20,8 +20,8 @@
             </TabItem>
             <TabItem Header="Settings" Padding="15,2">
                 <Canvas>
-                    <TextBox Text="{Binding Coords.Y_coordinate, Mode=TwoWay}" Width="213" TextAlignment="Center"  FontSize="24" Name="YCoord" Canvas.Left="187" Height="43" Canvas.Top="33.5" Padding="2,0,0,0"/>
-                    <TextBox Text="{Binding Coords.X_coordinate, Mode=TwoWay}" Width="216" TextAlignment="Center" FontSize="24" Name="XCoord" Canvas.Top="93.5" Canvas.Left="187" Height="43"/>
+                    <TextBox Text="{Binding Coords.YCoordinate}" Width="213" TextAlignment="Center"  FontSize="24" Name="YCoord" Canvas.Left="187" Height="43" Canvas.Top="33.5" Padding="2,0,0,0"/>
+                    <TextBox Text="{Binding Coords.XCoordinate}" Width="216" TextAlignment="Center" FontSize="24" Name="XCoord" Canvas.Top="93.5" Canvas.Left="187" Height="43"/>
                     <Button Click="Btn_ClickSaveCoords" Content="Save Coords" Canvas.Left="187" Canvas.Top="152.5" Width="216" Height="43"/>
                 </Canvas>
             </TabItem>

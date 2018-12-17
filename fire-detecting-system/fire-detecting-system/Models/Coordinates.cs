@@ -8,32 +8,32 @@ namespace fire_detecting_system.Models
 {
     public class Coordinates : ObservableObject
     {
-        private string x_coordinate;
-        private string y_coordinate;
+        private string xCoordinate;
+        private string yCoordinate;
 
-        public string X_coordinate
+        public string XCoordinate
         {
             get
             {
-                return x_coordinate;
+                return xCoordinate;
             }
             set
             {
-                x_coordinate = value;
-                OnPrepertyChanged("X_coordinate");
+                xCoordinate = value;
+                OnPrоpertyChanged();
             }
         }
 
-        public string Y_coordinate
+        public string YCoordinate
         {
             get
             {
-                return y_coordinate;
+                return yCoordinate;
             }
             set
             {
-                y_coordinate = value;
-                OnPrepertyChanged("Y_coordinate");
+                yCoordinate = value;
+                OnPrоpertyChanged();
             }
         }
     }

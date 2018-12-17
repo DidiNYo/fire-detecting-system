@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace fire_detecting_system.Models
 {
-    //MainModel is class that: 
+    //MainViewModel is class that: 
     //           - we use for binding data
     //           - helps us to have access to different models at the same time
-    public class MainModel
+    public class MainViewModel
     {
         public Coordinates Coords { get; private set; }
 
-        public MainModel()
+        public MainViewModel()
         {
             Coords = new Coordinates();
         }
