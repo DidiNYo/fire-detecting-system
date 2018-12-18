@@ -13,10 +13,15 @@ namespace ExternalServices
     public class APIService
     {
         private readonly string username;
+
         private readonly string password;
+
         private readonly HttpClient client;
+
         private DiscoveryResponse discovered; //Base URL of the server. 
+
         private string token;
+
         private readonly GraphQLClient graphQLClient;  
 
         public APIService()
@@ -29,14 +34,16 @@ namespace ExternalServices
 
         public async Task DiscoverServerAsync()
         {
-            discovered = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+            var req = new DiscoveryDocumentRequest
             {
                 Address = "http://aspires.icb.bg/identityserver", //Identity Server
                 Policy =
                 {
                     RequireHttps = false
                 }
-            });
+            };
+
+            discovered = await client.GetDiscoveryDocumentAsync(req);
 
             if (discovered.IsError)
             {
@@ -48,7 +55,7 @@ namespace ExternalServices
         {
             if (discovered == null)
             {
-                await DiscoverServerAsync();
+               await DiscoverServerAsync();
             }
 
             ClientCredentialsTokenRequest request = new ClientCredentialsTokenRequest
@@ -66,11 +73,11 @@ namespace ExternalServices
                 throw new Exception(tokenRequest.Error);
             }
 
-            //Authorizing the GraphQL client.
-            graphQLClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             //Extract the token from the JSON 
             token = tokenRequest.Json.TryGetString("access_token");
+
+            //Authorizing the GraphQL client.
+            graphQLClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         //Using the GraphQL Client Library.
@@ -95,7 +102,7 @@ namespace ExternalServices
             GraphQLResponse graphQLResponse = await graphQLClient.PostAsync(request);
 
             //To be created objects and converted to them.
-            Console.WriteLine(graphQLResponse);
+            System.Diagnostics.Debug.WriteLine(graphQLResponse);
         }
     }
 }

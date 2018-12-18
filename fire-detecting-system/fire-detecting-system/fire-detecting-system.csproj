@@ -165,7 +165,7 @@
     <EmbeddedResource Include="Resources\pin.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\APIService\ExternalServices.csproj">
+    <ProjectReference Include="..\ExternalServices\ExternalServices.csproj">
       <Project>{aff3b3ea-313c-44cf-a87a-30193f730e66}</Project>
       <Name>ExternalServices</Name>
     </ProjectReference>
