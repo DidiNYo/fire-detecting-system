@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fire-detecting-system", "fire-detecting-system\fire-detecting-system.csproj", "{67C842F3-8C93-4016-8F36-033DB2BA27E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalServices", "APIService\ExternalServices.csproj", "{AFF3B3EA-313C-44CF-A87A-30193F730E66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalServices", "ExternalServices\ExternalServices.csproj", "{AFF3B3EA-313C-44CF-A87A-30193F730E66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
