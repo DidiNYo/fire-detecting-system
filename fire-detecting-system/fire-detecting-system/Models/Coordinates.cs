@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace fire_detecting_system.Models
+﻿namespace fire_detecting_system.Models
 {
     public class Coordinates : ObservableObject
     {

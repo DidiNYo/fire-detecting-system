@@ -112,11 +112,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="City.cs" />
     <Compile Include="Models\MainViewModel.cs" />
     <Compile Include="Models\Coordinates.cs" />
     <Compile Include="ObservableObject.cs" />
-    <Compile Include="SensorsPoints.cs" />
+    <Compile Include="SensorsLocations.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

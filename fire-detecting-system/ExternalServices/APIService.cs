@@ -1,8 +1,10 @@
-﻿using GraphQL.Client;
+﻿using ExternalServices.Models;
+using GraphQL.Client;
 using GraphQL.Common.Request;
 using GraphQL.Common.Response;
 using IdentityModel.Client;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -24,6 +26,9 @@ namespace ExternalServices
 
         private readonly GraphQLClient graphQLClient;  
 
+        private Organization organization;
+
+
         public APIService()
         {
             username = ConfigurationManager.AppSettings["APIService.Username"];
@@ -32,7 +37,7 @@ namespace ExternalServices
             graphQLClient = new GraphQLClient("http://aspires.icb.bg//query/api/graphql"); //GraphQL Endpoint
         }
 
-        public async Task DiscoverServerAsync()
+        private async Task DiscoverServerAsync()
         {
             var req = new DiscoveryDocumentRequest
             {
@@ -51,7 +56,7 @@ namespace ExternalServices
             }
         }
 
-        public async Task GetTokenAsync()
+        private async Task GetTokenAsync()
         {
             if (discovered == null)
             {
@@ -78,10 +83,11 @@ namespace ExternalServices
 
             //Authorizing the GraphQL client.
             graphQLClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+           
         }
+        
 
-        //Using the GraphQL Client Library.
-        public async Task GetData()
+        private async Task GetOrganization()
         {
             if (string.IsNullOrEmpty(token))
             {
@@ -91,9 +97,15 @@ namespace ExternalServices
             GraphQLRequest request = new GraphQLRequest
             {
                 Query = @"{
-                        org(orgid: 6) {
+                    org(orgid: 6) {
+   			                name,
                             items {
-                                name
+                                name,
+          	                    typeid,
+                                properties {
+                                  type,
+                                  value
+                              }
                             }
                         }
                     }"
@@ -101,8 +113,17 @@ namespace ExternalServices
            
             GraphQLResponse graphQLResponse = await graphQLClient.PostAsync(request);
 
-            //To be created objects and converted to them.
-            System.Diagnostics.Debug.WriteLine(graphQLResponse);
+            organization = graphQLResponse.GetDataFieldAs<Organization>("org");
+        }
+
+        public async Task<List<OrganizationItem>> GetOrganizationItems()
+        {
+            if(organization == null)
+            {
+                await GetOrganization();
+            }
+
+            return organization.Items.FindAll(o => o.TypeId == 11 || o.TypeId == 12 || o.TypeId == 13);
         }
     }
 }
