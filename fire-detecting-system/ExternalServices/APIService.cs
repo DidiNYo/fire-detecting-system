@@ -12,9 +12,9 @@ namespace ExternalServices
 {
     public class APIService
     {
-        private string username;
-        private string password;
-        private HttpClient client;
+        private readonly string username;
+        private readonly string password;
+        private readonly HttpClient client;
         private DiscoveryResponse discovered; //Base URL of the server. 
         private string token;
 
@@ -36,7 +36,10 @@ namespace ExternalServices
                 }
             });
 
-            if (discovered.IsError) throw new Exception(discovered.Error);
+            if (discovered.IsError)
+            {
+                throw new Exception(discovered.Error);
+            }
         }
 
         public async Task GetTokenAsync()
@@ -56,7 +59,10 @@ namespace ExternalServices
 
             TokenResponse tokenRequest = await client.RequestClientCredentialsTokenAsync(request);
 
-            if (tokenRequest.IsError) throw new Exception(tokenRequest.Error);
+            if (tokenRequest.IsError)
+            {
+                throw new Exception(tokenRequest.Error);
+            }
 
             //Extract the token from the JSON 
             token = tokenRequest.Json.TryGetString("access_token");
@@ -69,7 +75,7 @@ namespace ExternalServices
             {
                 await GetTokenAsync();
             }
-            
+
             GraphQLRequest request = new GraphQLRequest
             {
                 Query = @"{
@@ -84,7 +90,7 @@ namespace ExternalServices
             GraphQLClient graphQLClient = new GraphQLClient("http://aspires.icb.bg//query/api/graphql"); //GraphQL Endpoint
             graphQLClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             GraphQLResponse graphQLResponse = await graphQLClient.PostAsync(request);
-            
+
             //To be created objects and converted to them.
             Console.WriteLine(graphQLResponse);
         }
