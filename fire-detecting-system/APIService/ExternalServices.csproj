@@ -7,8 +7,8 @@
     <ProjectGuid>{AFF3B3EA-313C-44CF-A87A-30193F730E66}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>APIService</RootNamespace>
-    <AssemblyName>APIService</AssemblyName>
+    <RootNamespace>ExternalServices</RootNamespace>
+    <AssemblyName>ExternalServices</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
