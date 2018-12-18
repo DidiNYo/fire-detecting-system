@@ -17,12 +17,14 @@ namespace ExternalServices
         private readonly HttpClient client;
         private DiscoveryResponse discovered; //Base URL of the server. 
         private string token;
+        private readonly GraphQLClient graphQLClient;  
 
         public APIService()
         {
             username = ConfigurationManager.AppSettings["APIService.Username"];
             password = ConfigurationManager.AppSettings["APIService.Password"];
             client = new HttpClient();
+            graphQLClient = new GraphQLClient("http://aspires.icb.bg//query/api/graphql"); //GraphQL Endpoint
         }
 
         public async Task DiscoverServerAsync()
@@ -64,6 +66,9 @@ namespace ExternalServices
                 throw new Exception(tokenRequest.Error);
             }
 
+            //Authorizing the GraphQL client.
+            graphQLClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             //Extract the token from the JSON 
             token = tokenRequest.Json.TryGetString("access_token");
         }
@@ -86,9 +91,7 @@ namespace ExternalServices
                         }
                     }"
             };
-
-            GraphQLClient graphQLClient = new GraphQLClient("http://aspires.icb.bg//query/api/graphql"); //GraphQL Endpoint
-            graphQLClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+           
             GraphQLResponse graphQLResponse = await graphQLClient.PostAsync(request);
 
             //To be created objects and converted to them.
