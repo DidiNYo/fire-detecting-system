@@ -5,7 +5,6 @@ using GraphQL.Common.Response;
 using IdentityModel.Client;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -28,11 +27,10 @@ namespace ExternalServices
 
         private Organization organization;
 
-
         public APIService()
         {
-            username = ConfigurationManager.AppSettings["APIService.Username"];
-            password = ConfigurationManager.AppSettings["APIService.Password"];
+            username = "";
+            password = "";
             client = new HttpClient();
             graphQLClient = new GraphQLClient("http://aspires.icb.bg//query/api/graphql"); //GraphQL Endpoint
         }
