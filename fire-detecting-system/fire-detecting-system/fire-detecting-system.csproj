@@ -147,7 +147,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Credentials.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

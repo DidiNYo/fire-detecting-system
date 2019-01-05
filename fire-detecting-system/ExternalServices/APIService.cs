@@ -3,8 +3,10 @@ using GraphQL.Client;
 using GraphQL.Common.Request;
 using GraphQL.Common.Response;
 using IdentityModel.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -27,10 +29,12 @@ namespace ExternalServices
 
         private Organization organization;
 
+        private static Credentials credentials = JsonConvert.DeserializeObject<Credentials>(File.ReadAllText("Credentials.json"));
+
         public APIService()
         {
-            username = "";
-            password = "";
+            username = credentials.Username;
+            password = credentials.Password;
             client = new HttpClient();
             graphQLClient = new GraphQLClient("http://aspires.icb.bg//query/api/graphql"); //GraphQL Endpoint
         }
