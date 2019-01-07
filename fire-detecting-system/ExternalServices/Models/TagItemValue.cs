@@ -9,6 +9,7 @@ namespace ExternalServices.Models
     public class TagItemValue
     {
         public string Date { get; set; }
+
         public string Value { get; set; }
     }
 }

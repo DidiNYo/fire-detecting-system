@@ -107,11 +107,13 @@
   <ItemGroup>
     <Compile Include="APIService.cs" />
     <Compile Include="Credentials.cs" />
+    <Compile Include="Models\LastData.cs" />
     <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\OrganizationItem.cs" />
     <Compile Include="Models\Property.cs" />
     <Compile Include="Models\TagInfo.cs" />
     <Compile Include="Models\TagItemValue.cs" />
+    <Compile Include="Models\Type.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

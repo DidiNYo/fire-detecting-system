@@ -48,11 +48,13 @@ namespace fire_detecting_system
             };
         }
 
+      //  APIService APIConnection;
         //This method gets the sensors data from the API. 
         private IEnumerable<IFeature> GetSensorsFromAPI()
         {
             APIService APIConnection = new APIService();
             List<OrganizationItem> sensors = Task.Run(() => APIConnection.GetOrganizationItems()).Result;
+
 
             return sensors.Select(s =>
             {

@@ -1,7 +1,11 @@
-﻿using fire_detecting_system.Models;
+﻿using ExternalServices;
+using ExternalServices.Models;
+using fire_detecting_system.Models;
 using Mapsui.Projection;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace fire_detecting_system
 {
@@ -18,6 +22,10 @@ namespace fire_detecting_system
 
             //Set mainModel to be source for the DataContext property
             DataContext = mainModel;
+
+
+            APIService APIConnection = new APIService();
+           Dictionary<string, List<KeyValuePair<string, string>>> lastValues = Task.Run(() => APIConnection.GetLastValuesFromSenssorsAsync()).Result;
         }
 
         private void Btn_ClickSaveCoords(object sender, System.Windows.RoutedEventArgs e)

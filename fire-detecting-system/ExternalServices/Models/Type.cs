@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace ExternalServices.Models
 {
-    public class TagInfo
+    public class Type
     {
-        public Type type;
-
-        public int TagId { get; set; }
+        public string Name { get; set; }
     }
 }
