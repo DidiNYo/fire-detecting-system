@@ -9,5 +9,7 @@ namespace ExternalServices.Models
         public int TypeId { get; set; }
          
         public List<Property> Properties { get; set; }
+
+        public List<TagInfo> Tags { get; set; }
     }
 }
