@@ -107,7 +107,7 @@
   <ItemGroup>
     <Compile Include="APIService.cs" />
     <Compile Include="Credentials.cs" />
-    <Compile Include="Models\LastData.cs" />
+    <Compile Include="Models\LastMeasurement.cs" />
     <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\OrganizationItem.cs" />
     <Compile Include="Models\Property.cs" />

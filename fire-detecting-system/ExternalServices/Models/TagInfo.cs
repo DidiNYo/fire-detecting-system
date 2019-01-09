@@ -8,7 +8,7 @@ namespace ExternalServices.Models
 {
     public class TagInfo
     {
-        public Type type;
+        public Type Type { get; set; }
 
         public int TagId { get; set; }
     }

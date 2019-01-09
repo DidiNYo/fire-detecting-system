@@ -30,9 +30,9 @@ namespace ExternalServices
 
         private Organization organization;
 
-        private List<TagInfo> tagInfoList;
-
         private static Credentials credentials = JsonConvert.DeserializeObject<Credentials>(File.ReadAllText("Credentials.json"));
+
+        // private Dictionary<string, List<TagInfo>> orgItemNameListTagInfoPair;
 
 
         public APIService()
@@ -109,6 +109,7 @@ namespace ExternalServices
                             items {
                                 name,
           	                    typeid,
+                                orgitemid,
                               	tags {
                                   tagid,
                                   type{
@@ -128,83 +129,75 @@ namespace ExternalServices
             GraphQLResponse graphQLResponse = await graphQLClient.PostAsync(request);
 
             organization = graphQLResponse.GetDataFieldAs<Organization>("org");
-            
 
         }
 
-        public async Task<List<OrganizationItem>> GetOrganizationItems()
+        public async Task<List<OrganizationItem>> GetOrganizationItemsAsync()
         {
             if (organization == null)
             {
                 await GetOrganization();
             }
 
-       
+
             return organization.Items.FindAll(o => o.TypeId == 11 || o.TypeId == 12 || o.TypeId == 13);
         }
 
-        public async Task<List<TagInfo>> GetTagInfoAsync()
+        public async Task<List<LastMeasurement>> GetLastMeasurementsAsync()
         {
             if (organization == null)
             {
                 await GetOrganization();
             }
 
-            tagInfoList = new List<TagInfo>();
-            for (int i = 0; i < organization.Items.Count(); i++)
+            List<LastMeasurement> lastMeasurements = new List<LastMeasurement>();
+            LastMeasurement currentMeasurement;
+
+            foreach (OrganizationItem organizationItem in organization.Items)
             {
-                for (int j = 0; j < organization.Items[i].Tags.Count; j++)
+                currentMeasurement = new LastMeasurement();
+                if(organizationItem.Name != null)
                 {
-                   
-                   tagInfoList.Add(organization.Items[i].Tags[j]);
+                    currentMeasurement.OrganizationItemName = organizationItem.Name;
                 }
-            }
+                currentMeasurement.OrganizationItemID = organizationItem.OrgItemId;
 
-            return tagInfoList;
-        }
 
-        // SSEEAA - Temp 20 , RH 50
-        // AASSBB - ....
-        public async Task<Dictionary<string, List<KeyValuePair<string, string>>>> GetLastValuesFromSenssorsAsync()
-        {
-            if (tagInfoList == null)
-            {
-                await GetTagInfoAsync();
-            }
-
-            List<KeyValuePair<string, string>> valuesList = new List<KeyValuePair<string, string>>();
-
-            List<TagItemValue> lastData = new List<TagItemValue>();
-
-            foreach (var tagInfo in tagInfoList)
-            {
-                if (tagInfo != null)
+                foreach (TagInfo tagInfo in organizationItem.Tags)
                 {
-                    int tagId = tagInfo.TagId;
-                    GraphQLRequest requesForTagIds = new GraphQLRequest
+                    if (tagInfo.Type != null)
                     {
+                        currentMeasurement.MeasurementType = tagInfo.Type.Name;
 
-                        Query = $@"{{
-                                last(tagid: {tagId}) {{
-                                    date,
-                                    value
-                                        }}
-                                    }}"
-                    };
+                        if (tagInfo != null)
+                        {
+                            int tagId = tagInfo.TagId;
+                            GraphQLRequest requesForTagIds = new GraphQLRequest
+                            {
 
-                    GraphQLResponse response = await graphQLClient.PostAsync(requesForTagIds);
-                    List<TagItemValue> lastTagItemValue = response.GetDataFieldAs<List<TagItemValue>>("last");
-                    if (lastTagItemValue.Count != 0)
-                    {
-                        lastData.Add(lastTagItemValue[0]);
+                                Query = $@"{{
+                                            last(tagid: {tagId}) {{
+                                                date,
+                                                value
+                                                    }}
+                                                }}"
+                            };
+
+                            GraphQLResponse response = await graphQLClient.PostAsync(requesForTagIds);
+                            List<TagItemValue> currentTagItemValue = response.GetDataFieldAs<List<TagItemValue>>("last");
+                            if (currentTagItemValue.Count != 0 && currentMeasurement.MeasurementType != null)
+                            {
+                                currentMeasurement.Values.Add(currentTagItemValue);
+                            }
+                        }
                     }
-                    // valuesList.Add(new KeyValuePair<string, string>(tagInfo.type.Name, lastValue.Value));
+                }
+                if (currentMeasurement != null)
+                {
+                    lastMeasurements.Add(currentMeasurement);
                 }
             }
-
-            return null;
+            return lastMeasurements;
         }
     }
-
- 
 }

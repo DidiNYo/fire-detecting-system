@@ -24,8 +24,8 @@ namespace fire_detecting_system
             DataContext = mainModel;
 
 
-            APIService APIConnection = new APIService();
-           Dictionary<string, List<KeyValuePair<string, string>>> lastValues = Task.Run(() => APIConnection.GetLastValuesFromSenssorsAsync()).Result;
+           APIService APIConnection = new APIService();
+            List<LastMeasurement> lastValues = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
         }
 
         private void Btn_ClickSaveCoords(object sender, System.Windows.RoutedEventArgs e)

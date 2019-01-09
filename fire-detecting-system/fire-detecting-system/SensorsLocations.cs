@@ -53,7 +53,7 @@ namespace fire_detecting_system
         private IEnumerable<IFeature> GetSensorsFromAPI()
         {
             APIService APIConnection = new APIService();
-            List<OrganizationItem> sensors = Task.Run(() => APIConnection.GetOrganizationItems()).Result;
+            List<OrganizationItem> sensors = Task.Run(() => APIConnection.GetOrganizationItemsAsync()).Result;
 
 
             return sensors.Select(s =>
