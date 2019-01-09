@@ -19,21 +19,33 @@ namespace fire_detecting_system
 {
     public class SensorsLocations
     {
+        private APIService APIConnection;
+
+        private Map map;
+
+        private List<OrganizationItem> sensors;
+
         public SensorsLocations(IMapControl mapControl)
         {
+            APIConnection = new APIService();
+            sensors = Task.Run(() => APIConnection.GetOrganizationItemsAsync()).Result;
+            map = new Map();
             mapControl.Map = CreateMap();
+            AddSensorsLayer();
         }
 
-        //Creates the map with the layers needed.
+        //Creates the main map
         private Map CreateMap()
         {
-            Map map = new Map();
-
-            map.Layers.Add(OpenStreetMap.CreateTileLayer());
-            map.Layers.Add(CreateSensorsLayer());
-            
+            map.Layers.Add(OpenStreetMap.CreateTileLayer());           
             map.Home = n => n.NavigateTo(map.Layers[1].Envelope.Centroid, map.Resolutions[10]); 
             return map;
+        }
+        
+        //Adds layer with the sensors
+        private void AddSensorsLayer()
+        {
+            map.Layers.Add(CreateSensorsLayer());
         }
 
         //Creates a layer with the sensors.
@@ -43,19 +55,13 @@ namespace fire_detecting_system
             {
                 Name = "Sensors",
                 IsMapInfoLayer = true,
-                DataSource = new MemoryProvider(GetSensorsFromAPI()),
+                DataSource = new MemoryProvider(GetSensors()),
                 Style = CreateBitmapStyle()
             };
         }
-
-      //  APIService APIConnection;
-        //This method gets the sensors data from the API. 
-        private IEnumerable<IFeature> GetSensorsFromAPI()
+        
+        private IEnumerable<IFeature> GetSensors()
         {
-            APIService APIConnection = new APIService();
-            List<OrganizationItem> sensors = Task.Run(() => APIConnection.GetOrganizationItemsAsync()).Result;
-
-
             return sensors.Select(s =>
             {
                 Feature feature = new Feature();
@@ -63,6 +69,18 @@ namespace fire_detecting_system
                 double latitude = double.Parse(s.Properties.Find(p => p.Type == "Latitude").Value, CultureInfo.InvariantCulture);
                 Point point = SphericalMercator.FromLonLat(longitude, latitude);
                 feature.Geometry = point;
+                LabelStyle label = new LabelStyle
+                {
+                    Text = "Some random example text",
+                    BackColor = new Brush(Color.Gray),
+                    ForeColor = Color.Black,
+                    MaxWidth = 10,
+                    WordWrap = LabelStyle.LineBreakMode.WordWrap,
+                    HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Center,
+                    Offset = new Offset(0, -40)
+                };
+
+                feature.Styles.Add(label);
 
                 return feature;
             });
