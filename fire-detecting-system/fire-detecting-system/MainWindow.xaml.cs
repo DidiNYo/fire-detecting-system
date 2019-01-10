@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace fire_detecting_system
 {
@@ -23,9 +24,17 @@ namespace fire_detecting_system
             //Set mainModel to be source for the DataContext property
             DataContext = mainModel;
 
+            //Subscribe for clicked left mouse button event
+            MainMap.MouseLeftButtonUp += MapControlOnMouseLeftButtonUp;
+
 
            APIService APIConnection = new APIService();
             List<LastMeasurement> lastValues = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
+        }
+        
+        private void MapControlOnMouseLeftButtonUp(object sender, MouseButtonEventArgs args)
+        {
+            //What will happen when the left mouse button is clicked. 
         }
 
         private void Btn_ClickSaveCoords(object sender, System.Windows.RoutedEventArgs e)
