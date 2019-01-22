@@ -1,7 +1,9 @@
 ﻿using ExternalServices;
 using ExternalServices.Models;
 using fire_detecting_system.Models;
+using Mapsui.Geometries;
 using Mapsui.Projection;
+using Mapsui.UI.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,29 +14,45 @@ namespace fire_detecting_system
 {
     public partial class MainWindow
     {
-        MainViewModel mainModel = new MainViewModel();
+        MainViewModel mainModel;
+        SensorsLocations sensors;
+        int numberOfClicks;
 
         public MainWindow()
         {
             InitializeComponent();
-
             //Visualize the sensors on the map.
-            SensorsLocations sensors = new SensorsLocations(MainMap);
+            sensors = new SensorsLocations(MainMap);
+            
+            //For labels.
+            numberOfClicks = 0;
 
             //Set mainModel to be source for the DataContext property
+            mainModel = new MainViewModel();
             DataContext = mainModel;
 
             //Subscribe for clicked left mouse button event
-            MainMap.MouseLeftButtonUp += MapControlOnMouseLeftButtonUp;
+            MainMap.MouseLeftButtonDown += MapControlOnMouseLeftButtonDown;
 
-
-           APIService APIConnection = new APIService();
+            //For testing.
+            APIService APIConnection = new APIService();
             List<LastMeasurement> lastValues = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
         }
         
-        private void MapControlOnMouseLeftButtonUp(object sender, MouseButtonEventArgs args)
+        //Show labels on click
+        private void MapControlOnMouseLeftButtonDown(object sender, MouseButtonEventArgs args)
         {
-            //What will happen when the left mouse button is clicked. 
+            Point clickedPoint = args.GetPosition(MainMap).ToMapsui();
+            ++numberOfClicks;
+            if(numberOfClicks == 1)
+            {
+                sensors.AddLabelsLayer(clickedPoint);
+            }
+            else
+            {
+                sensors.RemoveLabelLayer();
+                numberOfClicks = 0;
+            }                       
         }
 
         private void Btn_ClickSaveCoords(object sender, System.Windows.RoutedEventArgs e)

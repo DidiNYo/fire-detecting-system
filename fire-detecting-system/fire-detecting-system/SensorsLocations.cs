@@ -25,6 +25,8 @@ namespace fire_detecting_system
 
         private List<OrganizationItem> sensors;
 
+        private MemoryLayer LabelLayer;      
+
         public SensorsLocations(IMapControl mapControl)
         {
             APIConnection = new APIService();
@@ -37,15 +39,26 @@ namespace fire_detecting_system
         //Creates the main map
         private Map CreateMap()
         {
-            map.Layers.Add(OpenStreetMap.CreateTileLayer());           
-            map.Home = n => n.NavigateTo(map.Layers[1].Envelope.Centroid, map.Resolutions[10]); 
+            map.Layers.Add(OpenStreetMap.CreateTileLayer());
+            map.Home = n => n.NavigateTo(map.Layers[1].Envelope.Centroid, map.Resolutions[10]);
             return map;
         }
-        
+
         //Adds layer with the sensors
         private void AddSensorsLayer()
         {
             map.Layers.Add(CreateSensorsLayer());
+        }
+
+        public void AddLabelsLayer(Point point)
+        {        
+            CreateLabelLayer(point);
+            map.Layers.Add(LabelLayer);
+        }
+
+        public void RemoveLabelLayer()
+        {
+            map.Layers.Remove(LabelLayer);
         }
 
         //Creates a layer with the sensors.
@@ -59,15 +72,28 @@ namespace fire_detecting_system
                 Style = CreateBitmapStyle()
             };
         }
-        
-        private IEnumerable<IFeature> GetSensors()
+
+        private void CreateLabelLayer(Point point)
         {
+            LabelLayer = new MemoryLayer
+            {
+                Name = "Labels",
+                IsMapInfoLayer = true,
+                DataSource = new MemoryProvider(GetLabels(point)),
+                Style = CreateBitmapStyle()
+            };
+        }
+
+        // Initialize the labels.
+        private IEnumerable<IFeature> GetLabels(Point clickedPoint)
+        {           
             return sensors.Select(s =>
             {
                 Feature feature = new Feature();
                 double longitude = double.Parse(s.Properties.Find(p => p.Type == "Longitude").Value, CultureInfo.InvariantCulture);
                 double latitude = double.Parse(s.Properties.Find(p => p.Type == "Latitude").Value, CultureInfo.InvariantCulture);
                 Point point = SphericalMercator.FromLonLat(longitude, latitude);
+
                 feature.Geometry = point;
                 LabelStyle label = new LabelStyle
                 {
@@ -79,9 +105,22 @@ namespace fire_detecting_system
                     HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Center,
                     Offset = new Offset(0, -40)
                 };
-
                 feature.Styles.Add(label);
+                return feature;
+            });
 
+        }
+
+        //Initialize the sensors.
+        private IEnumerable<IFeature> GetSensors()
+        {
+            return sensors.Select(s =>
+            {
+                Feature feature = new Feature();
+                double longitude = double.Parse(s.Properties.Find(p => p.Type == "Longitude").Value, CultureInfo.InvariantCulture);
+                double latitude = double.Parse(s.Properties.Find(p => p.Type == "Latitude").Value, CultureInfo.InvariantCulture);
+                Point point = SphericalMercator.FromLonLat(longitude, latitude);
+                feature.Geometry = point;
                 return feature;
             });
         }
@@ -91,13 +130,13 @@ namespace fire_detecting_system
             string path = "fire_detecting_system.Resources.pin.png"; //Image file. Embedded resource.
             int bitmapId = GetBitmapIdForEmbeddedResource(path);
             return new SymbolStyle { BitmapId = bitmapId, SymbolScale = 1, SymbolOffset = new Offset(0, 0) }; //Setings of the image.
-        } 
+        }
 
         private int GetBitmapIdForEmbeddedResource(string imagePath)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             Stream image = assembly.GetManifestResourceStream(imagePath);
-            
+
             return BitmapRegistry.Instance.Register(image);
         }
     }
