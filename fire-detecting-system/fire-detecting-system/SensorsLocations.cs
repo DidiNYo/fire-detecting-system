@@ -26,15 +26,19 @@ namespace fire_detecting_system
 
         private List<OrganizationItem> sensors;
 
-        private MemoryLayer LabelLayer;      
+        private MemoryLayer LabelLayer;
+
+        private List<IFeature> features;
 
         public SensorsLocations(IMapControl mapControl)
         {
             APIConnection = new APIService();
+            features = new List<IFeature>();
             sensors = Task.Run(() => APIConnection.GetOrganizationItemsAsync()).Result;
             map = new Map();
             mapControl.Map = CreateMap();
             AddSensorsLayer();
+
         }
 
         //Creates the main map
@@ -51,17 +55,6 @@ namespace fire_detecting_system
             map.Layers.Add(CreateSensorsLayer());
         }
 
-        public void AddLabelsLayer(IFeature clidkedFeature)
-        {        
-            CreateLabelLayer(clidkedFeature);
-            map.Layers.Add(LabelLayer);
-        }
-
-        public void RemoveLabelLayer()
-        {
-            map.Layers.Remove(LabelLayer);
-        }
-
         //Creates a layer with the sensors.
         private MemoryLayer CreateSensorsLayer()
         {
@@ -71,65 +64,6 @@ namespace fire_detecting_system
                 IsMapInfoLayer = true,
                 DataSource = new MemoryProvider(GetSensors()),
                 Style = null
-            };
-        }
-
-        //Creates a layer with labels
-        private void CreateLabelLayer(IFeature clidkedFeature)
-        {
-            LabelLayer = new MemoryLayer
-            {
-                Name = "Labels",
-                IsMapInfoLayer = true,
-                DataSource = new MemoryProvider(GetLabels(clidkedFeature)),
-                Style = null
-            };
-        }
-
-        // Initialize the labels.
-        private IEnumerable<IFeature> GetLabels(IFeature clidkedFeature)
-        {           
-            return sensors.Select(s =>
-            {
-                Feature feature = new Feature();
-                double longitude = double.Parse(s.Properties.Find(p => p.Type == "Longitude").Value, CultureInfo.InvariantCulture);
-                double latitude = double.Parse(s.Properties.Find(p => p.Type == "Latitude").Value, CultureInfo.InvariantCulture);
-                Point point = SphericalMercator.FromLonLat(longitude, latitude);
-                feature.Geometry = point;
-                LabelStyle label = new LabelStyle
-                {
-                    Text = "Some random example text",
-                    BackColor = new Brush(Color.Gray),
-                    ForeColor = Color.Black,
-                    MaxWidth = 10,
-                    WordWrap = LabelStyle.LineBreakMode.WordWrap,
-                    HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Center,
-                    Offset = new Offset(0, -40)
-                };
-                feature.Styles.Add(label);
-                
-                return feature;
-            });
-
-        }
-
-        //The sensor position is marked with small red dot.
-        private static IStyle SmallRedDot()
-        {
-            return new SymbolStyle {
-                SymbolScale = 0.2,
-                Fill = new Brush { Color = Color.Red }
-            };
-        }
-
-        //Adding red outline to the dot.
-        private static IStyle RedOutline()
-        {
-            return new SymbolStyle
-            {
-                SymbolScale = 0.5f,
-                Fill = null,
-                Outline = new Pen { Color = Color.Red }
             };
         }
 
@@ -145,8 +79,92 @@ namespace fire_detecting_system
                 feature.Geometry = point;
                 feature.Styles.Add(SmallRedDot());
                 feature.Styles.Add(RedOutline());
+                features.Add(new Feature(feature));
                 return feature;
             });
+        }
+
+        public void AddLabelsLayer(IFeature clickedFeature)
+        {           
+            if (clickedFeature != null)
+            {
+                CreateLabelLayer(clickedFeature);
+                map.Layers.Add(LabelLayer);
+            }
+
+        }
+
+        public void RemoveLabelLayer()
+        {
+            if (LabelLayer != null)
+            {
+                map.Layers.Remove(LabelLayer);
+            }
+        }
+
+        //Creates a layer with labels
+        private void CreateLabelLayer(IFeature clickedFeature)
+        {
+            if(clickedFeature != null)
+            {
+                LabelLayer = new MemoryLayer
+                {
+                    Name = "Labels",
+                    IsMapInfoLayer = true,
+                    DataSource = new MemoryProvider(GetLabels(clickedFeature)),
+                    Style = null
+                };
+            }
+        }
+
+        // Initialize the labels.
+        private IFeature GetLabels(IFeature clickedFeature)
+        {
+            if(clickedFeature != null)
+            {
+                Point clickedPoint = (Point)clickedFeature.Geometry;
+                foreach (Feature feature in features)
+                {
+                    Point currentPoint = (Point)feature.Geometry;
+                    if (clickedPoint.X == currentPoint.X && clickedPoint.Y == currentPoint.Y)
+                    {
+                        LabelStyle label = new LabelStyle
+                        {
+                            Text = "Some random example text",
+                            BackColor = new Brush(Color.Gray),
+                            ForeColor = Color.Black,
+                            MaxWidth = 10,
+                            WordWrap = LabelStyle.LineBreakMode.WordWrap,
+                            HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Center,
+                            Offset = new Offset(0, -40)
+                        };
+                        feature.Styles.Add(label);
+                        return feature;
+                    }
+                }
+            }
+            return null;
+        }
+
+        //The sensor position is marked with small red dot.
+        private static IStyle SmallRedDot()
+        {
+            return new SymbolStyle
+            {
+                SymbolScale = 0.2,
+                Fill = new Brush { Color = Color.Red }
+            };
+        }
+
+        //Adding red outline to the dot.
+        private static IStyle RedOutline()
+        {
+            return new SymbolStyle
+            {
+                SymbolScale = 0.5f,
+                Fill = null,
+                Outline = new Pen { Color = Color.Red }
+            };
         }
     }
 }

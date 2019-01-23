@@ -26,7 +26,7 @@ namespace fire_detecting_system
             InitializeComponent();
             //Visualize the sensors on the map.
             sensors = new SensorsLocations(MainMap);
-            
+
             //For labels.
             numberOfClicks = 0;
 
@@ -35,17 +35,18 @@ namespace fire_detecting_system
             DataContext = mainModel;
 
             //Subscribe for clicked left mouse button event
-            MainMap.Info += MapControlOnInfo;
+            MainMap.Info += MaiMaplOnInfo;
 
             //For testing.
             APIService APIConnection = new APIService();
             List<LastMeasurement> lastValues = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
         }
 
-        private void MapControlOnInfo(object sender, MapInfoEventArgs args)
+        //Show label on clicked sensor
+        private void MaiMaplOnInfo(object sender, MapInfoEventArgs args)
         {
             ++numberOfClicks;
-            if(numberOfClicks == 1)
+            if (numberOfClicks == 1)
             {
                 sensors.AddLabelsLayer(args.MapInfo.Feature);
             }
