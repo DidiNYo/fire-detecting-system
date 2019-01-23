@@ -8,20 +8,15 @@ using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.UI;
 using Mapsui.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace fire_detecting_system
 {
     public class SensorsLocations
     {
-        private APIService APIConnection;
-
         private Map map;
 
         private List<OrganizationItem> sensors;
@@ -30,15 +25,13 @@ namespace fire_detecting_system
 
         private List<IFeature> features;
 
-        public SensorsLocations(IMapControl mapControl)
+        public SensorsLocations(IMapControl mapControl, APIService APIConnection)
         {
-            APIConnection = new APIService();
             features = new List<IFeature>();
             sensors = Task.Run(() => APIConnection.GetOrganizationItemsAsync()).Result;
             map = new Map();
             mapControl.Map = CreateMap();
             AddSensorsLayer();
-
         }
 
         //Creates the main map
@@ -84,14 +77,13 @@ namespace fire_detecting_system
             });
         }
 
-        public void AddLabelsLayer(IFeature clickedFeature)
-        {           
+        public void AddLabelLayer(IFeature clickedFeature)
+        {
             if (clickedFeature != null)
             {
                 CreateLabelLayer(clickedFeature);
                 map.Layers.Add(LabelLayer);
             }
-
         }
 
         public void RemoveLabelLayer()
@@ -105,7 +97,7 @@ namespace fire_detecting_system
         //Creates a layer with labels
         private void CreateLabelLayer(IFeature clickedFeature)
         {
-            if(clickedFeature != null)
+            if (clickedFeature != null)
             {
                 LabelLayer = new MemoryLayer
                 {
@@ -120,7 +112,7 @@ namespace fire_detecting_system
         // Initialize the labels.
         private IFeature GetLabels(IFeature clickedFeature)
         {
-            if(clickedFeature != null)
+            if (clickedFeature != null)
             {
                 Point clickedPoint = (Point)clickedFeature.Geometry;
                 foreach (Feature feature in features)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExternalServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,9 +14,12 @@ namespace fire_detecting_system.Models
     {
         public Coordinates Coords { get; private set; }
 
+        public APIService APIConnection { get; private set; }
+
         public MainViewModel()
         {
             Coords = new Coordinates();
+            APIConnection = new APIService();
         }
     }
 }

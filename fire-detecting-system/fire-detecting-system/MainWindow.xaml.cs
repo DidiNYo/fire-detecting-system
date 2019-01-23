@@ -18,20 +18,24 @@ namespace fire_detecting_system
     public partial class MainWindow
     {
         MainViewModel mainModel;
+
         SensorsLocations sensors;
+
         int numberOfClicks;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            mainModel = new MainViewModel();
+
             //Visualize the sensors on the map.
-            sensors = new SensorsLocations(MainMap);
+            sensors = new SensorsLocations(MainMap, mainModel.APIConnection);
 
             //For labels.
             numberOfClicks = 0;
 
-            //Set mainModel to be source for the DataContext property
-            mainModel = new MainViewModel();
+            //Set mainModel to be source for the DataContext property          
             DataContext = mainModel;
 
             //Subscribe for clicked left mouse button event
@@ -48,7 +52,7 @@ namespace fire_detecting_system
             ++numberOfClicks;
             if (numberOfClicks == 1)
             {
-                sensors.AddLabelsLayer(args.MapInfo.Feature);
+                sensors.AddLabelLayer(args.MapInfo.Feature);
             }
             else
             {
