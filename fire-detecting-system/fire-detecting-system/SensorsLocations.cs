@@ -51,9 +51,9 @@ namespace fire_detecting_system
             map.Layers.Add(CreateSensorsLayer());
         }
 
-        public void AddLabelsLayer(Point point)
+        public void AddLabelsLayer(IFeature clidkedFeature)
         {        
-            CreateLabelLayer(point);
+            CreateLabelLayer(clidkedFeature);
             map.Layers.Add(LabelLayer);
         }
 
@@ -75,19 +75,19 @@ namespace fire_detecting_system
         }
 
         //Creates a layer with labels
-        private void CreateLabelLayer(Point point)
+        private void CreateLabelLayer(IFeature clidkedFeature)
         {
             LabelLayer = new MemoryLayer
             {
                 Name = "Labels",
                 IsMapInfoLayer = true,
-                DataSource = new MemoryProvider(GetLabels(point)),
+                DataSource = new MemoryProvider(GetLabels(clidkedFeature)),
                 Style = null
             };
         }
 
         // Initialize the labels.
-        private IEnumerable<IFeature> GetLabels(Point clickedPoint)
+        private IEnumerable<IFeature> GetLabels(IFeature clidkedFeature)
         {           
             return sensors.Select(s =>
             {
