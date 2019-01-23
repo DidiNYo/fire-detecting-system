@@ -8,6 +8,7 @@ using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.UI;
 using Mapsui.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -69,10 +70,11 @@ namespace fire_detecting_system
                 Name = "Sensors",
                 IsMapInfoLayer = true,
                 DataSource = new MemoryProvider(GetSensors()),
-                Style = CreateBitmapStyle()
+                Style = null
             };
         }
 
+        //Creates a layer with labels
         private void CreateLabelLayer(Point point)
         {
             LabelLayer = new MemoryLayer
@@ -80,7 +82,7 @@ namespace fire_detecting_system
                 Name = "Labels",
                 IsMapInfoLayer = true,
                 DataSource = new MemoryProvider(GetLabels(point)),
-                Style = CreateBitmapStyle()
+                Style = null
             };
         }
 
@@ -93,7 +95,6 @@ namespace fire_detecting_system
                 double longitude = double.Parse(s.Properties.Find(p => p.Type == "Longitude").Value, CultureInfo.InvariantCulture);
                 double latitude = double.Parse(s.Properties.Find(p => p.Type == "Latitude").Value, CultureInfo.InvariantCulture);
                 Point point = SphericalMercator.FromLonLat(longitude, latitude);
-
                 feature.Geometry = point;
                 LabelStyle label = new LabelStyle
                 {
@@ -106,9 +107,30 @@ namespace fire_detecting_system
                     Offset = new Offset(0, -40)
                 };
                 feature.Styles.Add(label);
+                
                 return feature;
             });
 
+        }
+
+        //The sensor position is marked with small red dot.
+        private static IStyle SmallRedDot()
+        {
+            return new SymbolStyle {
+                SymbolScale = 0.2,
+                Fill = new Brush { Color = Color.Red }
+            };
+        }
+
+        //Adding red outline to the dot.
+        private static IStyle RedOutline()
+        {
+            return new SymbolStyle
+            {
+                SymbolScale = 0.5f,
+                Fill = null,
+                Outline = new Pen { Color = Color.Red }
+            };
         }
 
         //Initialize the sensors.
@@ -121,23 +143,10 @@ namespace fire_detecting_system
                 double latitude = double.Parse(s.Properties.Find(p => p.Type == "Latitude").Value, CultureInfo.InvariantCulture);
                 Point point = SphericalMercator.FromLonLat(longitude, latitude);
                 feature.Geometry = point;
+                feature.Styles.Add(SmallRedDot());
+                feature.Styles.Add(RedOutline());
                 return feature;
             });
-        }
-
-        private SymbolStyle CreateBitmapStyle()
-        {
-            string path = "fire_detecting_system.Resources.pin.png"; //Image file. Embedded resource.
-            int bitmapId = GetBitmapIdForEmbeddedResource(path);
-            return new SymbolStyle { BitmapId = bitmapId, SymbolScale = 1, SymbolOffset = new Offset(0, 0) }; //Setings of the image.
-        }
-
-        private int GetBitmapIdForEmbeddedResource(string imagePath)
-        {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Stream image = assembly.GetManifestResourceStream(imagePath);
-
-            return BitmapRegistry.Instance.Register(image);
         }
     }
 }

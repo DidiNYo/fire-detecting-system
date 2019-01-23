@@ -154,13 +154,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <EmbeddedResource Include="Resources\test.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\pin.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExternalServices\ExternalServices.csproj">
