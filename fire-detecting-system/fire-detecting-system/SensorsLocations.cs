@@ -23,11 +23,11 @@ namespace fire_detecting_system
 
         private MemoryLayer LabelLayer;
 
-        private List<IFeature> features;
+        private Dictionary<Point, Feature> features;
 
         public SensorsLocations(IMapControl mapControl, APIService APIConnection)
         {
-            features = new List<IFeature>();
+            features = new Dictionary<Point, Feature>();
             sensors = Task.Run(() => APIConnection.GetOrganizationItemsAsync()).Result;
             map = new Map();
             mapControl.Map = CreateMap();
@@ -72,7 +72,7 @@ namespace fire_detecting_system
                 feature.Geometry = point;
                 feature.Styles.Add(SmallRedDot());
                 feature.Styles.Add(RedOutline());
-                features.Add(new Feature(feature));
+                features.Add(point, new Feature(feature));
                 return feature;
             });
         }
@@ -115,24 +115,21 @@ namespace fire_detecting_system
             if (clickedFeature != null)
             {
                 Point clickedPoint = (Point)clickedFeature.Geometry;
-                foreach (Feature feature in features)
+                Feature feature = features[clickedPoint];
+                if (feature != null)
                 {
-                    Point currentPoint = (Point)feature.Geometry;
-                    if (clickedPoint.X == currentPoint.X && clickedPoint.Y == currentPoint.Y)
+                    LabelStyle label = new LabelStyle
                     {
-                        LabelStyle label = new LabelStyle
-                        {
-                            Text = "Some random example text",
-                            BackColor = new Brush(Color.Gray),
-                            ForeColor = Color.Black,
-                            MaxWidth = 10,
-                            WordWrap = LabelStyle.LineBreakMode.WordWrap,
-                            HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Center,
-                            Offset = new Offset(0, -40)
-                        };
-                        feature.Styles.Add(label);
-                        return feature;
-                    }
+                        Text = "Some random example text",
+                        BackColor = new Brush(Color.Gray),
+                        ForeColor = Color.Black,
+                        MaxWidth = 10,
+                        WordWrap = LabelStyle.LineBreakMode.WordWrap,
+                        HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Center,
+                        Offset = new Offset(0, -40)
+                    };
+                    feature.Styles.Add(label);
+                    return feature;
                 }
             }
             return null;
