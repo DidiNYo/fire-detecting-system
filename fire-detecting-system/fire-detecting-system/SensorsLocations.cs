@@ -21,8 +21,6 @@ namespace fire_detecting_system
 
         private List<OrganizationItem> sensors;
 
-        private MemoryLayer LabelLayer;
-
         private Dictionary<Point, Feature> features;
 
         public SensorsLocations(IMapControl mapControl, APIService APIConnection)
@@ -32,6 +30,7 @@ namespace fire_detecting_system
             map = new Map();
             mapControl.Map = CreateMap();
             AddSensorsLayer();
+            AddLabelLayer();
         }
 
         //Creates the main map
@@ -55,13 +54,13 @@ namespace fire_detecting_system
             {
                 Name = "Sensors",
                 IsMapInfoLayer = true,
-                DataSource = new MemoryProvider(GetSensors()),
+                DataSource = new MemoryProvider(InitializeSensors()),
                 Style = null
             };
         }
 
         //Initialize the sensors.
-        private IEnumerable<IFeature> GetSensors()
+        private IEnumerable<IFeature> InitializeSensors()
         {
             return sensors.Select(s =>
             {
@@ -77,52 +76,53 @@ namespace fire_detecting_system
             });
         }
 
-        public void AddLabelLayer(IFeature clickedFeature)
+        public void AddLabelLayer()
         {
-            if (clickedFeature != null)
+            map.Layers.Add(CreateLabelLayer());
+        }
+
+
+        //Creates a layer with labels
+        private MemoryLayer CreateLabelLayer()
+        {
+            return new MemoryLayer
             {
-                CreateLabelLayer(clickedFeature);
-                map.Layers.Add(LabelLayer);
-            }
+                Name = "Labels",
+                IsMapInfoLayer = true,
+                DataSource = new MemoryProvider(InitializeLabels()),
+                Style = null
+            };
         }
 
         //Remove label from clicked feature
-        public void RemoveLabelLayer(IFeature clickedFeature)
+        public void HideLabel(IFeature clickedFeature)
         {
-            if (LabelLayer != null)
+            Point clickedPoint = (Point)clickedFeature.Geometry;
+            Feature feature = features[clickedPoint];
+            if (feature != null)
+            {
+                feature.Styles.Last().Enabled = false;
+            }
+        }
+
+        //Show label 
+        public void DisplayLabel(IFeature clickedFeature)
+        {
+            if(clickedFeature != null)
             {
                 Point clickedPoint = (Point)clickedFeature.Geometry;
                 Feature feature = features[clickedPoint];
                 if (feature != null)
                 {
-                    feature.Styles.Clear();
+                    feature.Styles.Last().Enabled = true;
                 }
             }
         }
 
-        //Creates a layer with labels
-        private void CreateLabelLayer(IFeature clickedFeature)
-        {
-            if (clickedFeature != null)
-            {
-                LabelLayer = new MemoryLayer
-                {
-                    Name = "Labels",
-                    IsMapInfoLayer = true,
-                    DataSource = new MemoryProvider(GetLabels(clickedFeature)),
-                    Style = null
-                };
-            }
-        }
-
         // Initialize the labels.
-        private IFeature GetLabels(IFeature clickedFeature)
+        private IEnumerable<IFeature> InitializeLabels()
         {
-            if (clickedFeature != null)
-            {
-                Point clickedPoint = (Point)clickedFeature.Geometry;
-                Feature feature = features[clickedPoint];
-                if (feature != null)
+            return features.Values.Select(feature =>
                 {
                     LabelStyle label = new LabelStyle
                     {
@@ -135,10 +135,9 @@ namespace fire_detecting_system
                         Offset = new Offset(0, -40)
                     };
                     feature.Styles.Add(label);
+                    feature.Styles.Last().Enabled = false;
                     return feature;
-                }
-            }
-            return null;
+                });
         }
 
         //The sensor position is marked with small red dot.

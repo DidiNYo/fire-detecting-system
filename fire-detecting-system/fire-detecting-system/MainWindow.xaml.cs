@@ -57,21 +57,21 @@ namespace fire_detecting_system
                 //2. Remove it.
                 if(clickedFeature != null)
                 {
-                    sensors.RemoveLabelLayer(clickedFeature);
+                    sensors.HideLabel(clickedFeature);
                 }
-                sensors.AddLabelLayer(args.MapInfo.Feature);
+                sensors.DisplayLabel(args.MapInfo.Feature);
                 clickedFeature = args.MapInfo.Feature;
             }
             if (numberOfClicks == 2)
             {
                 if (clickedFeature != null)
                 {
-                    sensors.RemoveLabelLayer(clickedFeature);
+                    sensors.HideLabel(clickedFeature);
                     clickedFeature = null;
                     //1. If second click is on a new feature show label for it.
                     if (args.MapInfo.Feature != null)
                     {
-                        sensors.AddLabelLayer(args.MapInfo.Feature);
+                        sensors.DisplayLabel(args.MapInfo.Feature);
                         clickedFeature = args.MapInfo.Feature;
                     }
                 }
