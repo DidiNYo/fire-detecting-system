@@ -30,7 +30,7 @@ namespace ExternalServices
 
         private Organization organization;
 
-        private static Credentials credentials = JsonConvert.DeserializeObject<Credentials>(File.ReadAllText("Credentials.json"));
+        private static Configuration credentials = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText("Configuration.json"));
 
         // private Dictionary<string, List<TagInfo>> orgItemNameListTagInfoPair;
 

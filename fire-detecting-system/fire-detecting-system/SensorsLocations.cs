@@ -76,7 +76,7 @@ namespace fire_detecting_system
             });
         }
 
-        public void AddLabelLayer()
+        private void AddLabelLayer()
         {
             map.Layers.Add(CreateLabelLayer());
         }
