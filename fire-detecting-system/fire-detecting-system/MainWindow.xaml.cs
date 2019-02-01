@@ -23,6 +23,8 @@ namespace fire_detecting_system
 
         int numberOfClicks;
 
+        IFeature clickedFeature;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -52,13 +54,30 @@ namespace fire_detecting_system
             ++numberOfClicks;
             if (numberOfClicks == 1)
             {
+                //2. Remove it.
+                if(clickedFeature != null)
+                {
+                    sensors.RemoveLabelLayer(clickedFeature);
+                }
                 sensors.AddLabelLayer(args.MapInfo.Feature);
+                clickedFeature = args.MapInfo.Feature;
             }
-            else
+            if (numberOfClicks == 2)
             {
-                sensors.RemoveLabelLayer();
+                if (clickedFeature != null)
+                {
+                    sensors.RemoveLabelLayer(clickedFeature);
+                    clickedFeature = null;
+                    //1. If second click is on a new feature show label for it.
+                    if (args.MapInfo.Feature != null)
+                    {
+                        sensors.AddLabelLayer(args.MapInfo.Feature);
+                        clickedFeature = args.MapInfo.Feature;
+                    }
+                }
                 numberOfClicks = 0;
             }
+
         }
 
         private void Btn_ClickSaveCoords(object sender, System.Windows.RoutedEventArgs e)

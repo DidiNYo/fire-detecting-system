@@ -86,11 +86,17 @@ namespace fire_detecting_system
             }
         }
 
-        public void RemoveLabelLayer()
+        //Remove label from clicked feature
+        public void RemoveLabelLayer(IFeature clickedFeature)
         {
             if (LabelLayer != null)
             {
-                map.Layers.Remove(LabelLayer);
+                Point clickedPoint = (Point)clickedFeature.Geometry;
+                Feature feature = features[clickedPoint];
+                if (feature != null)
+                {
+                    feature.Styles.Clear();
+                }
             }
         }
 
