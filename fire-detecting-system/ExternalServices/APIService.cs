@@ -3,11 +3,8 @@ using GraphQL.Client;
 using GraphQL.Common.Request;
 using GraphQL.Common.Response;
 using IdentityModel.Client;
-using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -29,6 +26,8 @@ namespace ExternalServices
         private readonly GraphQLClient graphQLClient;
 
         private Organization organization;
+
+        enum Type { Type11 = 11, Type12 = 12, Type13 = 13 }
 
         // private Dictionary<string, List<TagInfo>> orgItemNameListTagInfoPair;
 
@@ -136,8 +135,10 @@ namespace ExternalServices
                 await GetOrganization();
             }
 
-
-            return organization.Items.FindAll(o => o.TypeId == 11 || o.TypeId == 12 || o.TypeId == 13);
+            return organization.Items.FindAll(o =>
+            o.TypeId == (int)Type.Type11 ||
+            o.TypeId == (int)Type.Type11 ||
+            o.TypeId == (int)Type.Type13);
         }
 
         public async Task<List<LastMeasurement>> GetLastMeasurementsAsync()
@@ -153,7 +154,7 @@ namespace ExternalServices
             foreach (OrganizationItem organizationItem in organization.Items)
             {
                 currentMeasurement = new LastMeasurement();
-                if(organizationItem.Name != null)
+                if (organizationItem.Name != null)
                 {
                     currentMeasurement.OrganizationItemName = organizationItem.Name;
                 }
