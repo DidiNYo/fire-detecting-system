@@ -30,17 +30,14 @@ namespace ExternalServices
 
         private Organization organization;
 
-        private static Configuration credentials = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText("Configuration.json"));
-
         // private Dictionary<string, List<TagInfo>> orgItemNameListTagInfoPair;
-
 
         public APIService()
         {
-            username = credentials.Username;
-            password = credentials.Password;
+            username = GetConfiguration.ConfigurationInstance.ConfigurationData.Username;
+            password = GetConfiguration.ConfigurationInstance.ConfigurationData.Password;
             client = new HttpClient();
-            graphQLClient = new GraphQLClient("http://aspires.icb.bg//query/api/graphql"); //GraphQL Endpoint
+            graphQLClient = new GraphQLClient(GetConfiguration.ConfigurationInstance.ConfigurationData.GraphQLClient); //GraphQL Endpoint
         }
 
 
@@ -48,7 +45,7 @@ namespace ExternalServices
         {
             var req = new DiscoveryDocumentRequest
             {
-                Address = "http://aspires.icb.bg/identityserver", //Identity Server
+                Address = GetConfiguration.ConfigurationInstance.ConfigurationData.IdentityServer, //Identity Server
                 Policy =
                 {
                     RequireHttps = false

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ExternalServices
 {
-    class Configuration
+    public class Configuration
     {
         public string Username { get; set; }
 
