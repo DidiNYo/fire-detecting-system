@@ -13,20 +13,49 @@
 
     <Grid>
         <!--Main Tabs-->
-        <TabControl HorizontalAlignment="Stretch" Margin="5" Controls:TabControlHelper.Underlined="TabPanel">
+        <TabControl HorizontalAlignment="Stretch" Margin="0,10,10,0" Controls:TabControlHelper.Underlined="TabPanel">
             <TabItem Header="Visualize Sensors" Padding="15,2">
                 <!--Initialize Map-->
                 <xaml:MapControl Name="MainMap"></xaml:MapControl>
             </TabItem>
             <TabItem Header="Settings" Padding="15,2">
                 <Canvas>
-                    <TextBox Text="{Binding Coords.YCoordinate}" Width="213" TextAlignment="Center"  FontSize="24" Name="YCoord" Canvas.Left="187" Height="43" Canvas.Top="33.5" Padding="2,0,0,0"/>
-                    <TextBox Text="{Binding Coords.XCoordinate}" Width="216" TextAlignment="Center" FontSize="24" Name="XCoord" Canvas.Top="93.5" Canvas.Left="187" Height="43"/>
-                    <Button Click="Btn_ClickSaveCoords" Content="Save Coords" Canvas.Left="187" Canvas.Top="152.5" Width="216" Height="43"/>
+                    <GroupBox Header="Center Coordinates" Height="254.4" Width="249" Canvas.Left="30.8" Canvas.Top="31.6"/>
+                    <Label Content="Y Coordinates" Height="30" Canvas.Left="46.8" Canvas.Top="69.8" Width="216" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Coords.YCoordinate}" Width="216" TextAlignment="Center"  FontSize="24" Name="YCoord" Canvas.Left="46.8" Height="43" Canvas.Top="96.1" Padding="2,0,0,0"/>
+                    <Label Content="X Coordinates" Height="30" Canvas.Left="46.8" Canvas.Top="139.1" Width="216" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Coords.XCoordinate}" Width="216" TextAlignment="Center" FontSize="24" Name="XCoord" Canvas.Top="169.1" Canvas.Left="46.8" Height="43"/>
+                    <Button Click="Btn_ClickSaveCoords" Content="Apply Coordinates" Canvas.Left="46.8" Canvas.Top="228.7" Width="216" Height="43"/>
+                    <GroupBox Header="Default Zoom Level" Height="254.4" Canvas.Left="349.6" Canvas.Top="31.6" Width="249"/>
+                    <Label Content="Zoom Level" Height="30" Canvas.Left="366.7" Canvas.Top="69.8" Width="216" FontWeight="Bold"/>
+                    <ComboBox Canvas.Left="366.7" Canvas.Top="96.1" Width="216" Height="43" IsEditable="True">
+                        <ComboBoxItem Content="1"/>
+                        <ComboBoxItem Content="2"/>
+                        <ComboBoxItem Content="3"/>
+                        <ComboBoxItem Content="4"/>
+                        <ComboBoxItem Content="5"/>
+                        <ComboBoxItem Content="6"/>
+                        <ComboBoxItem Content="7"/>
+                        <ComboBoxItem Content="8"/>
+                        <ComboBoxItem Content="9"/>
+                        <ComboBoxItem Content="10"/>
+                        <ComboBoxItem Content="11"/>
+                        <ComboBoxItem Content="12"/>
+                        <ComboBoxItem Content="13"/>
+                        <ComboBoxItem Content="14"/>
+                        <ComboBoxItem Content="15"/>
+                        <ComboBoxItem Content="16"/>
+                        <ComboBoxItem Content="17"/>
+                        <ComboBoxItem Content="18"/>
+                        <ComboBoxItem Content="19"/>
+                    </ComboBox>
+                    <Button Content="Apply Zoom Level" Height="43" Canvas.Left="366.7" Canvas.Top="228.7" Width="216"/>
                 </Canvas>
             </TabItem>
             <TabItem Header="Define Alarms" Padding="15,2"/>
             <TabItem Header="History" Padding="15,2"/>
+            <Label Content="Y Coordinates" Height="30" Width="216" FontWeight="Bold"/>
+
         </TabControl>
         <!--Main Tabs-->
     </Grid>
