@@ -29,7 +29,7 @@ namespace ExternalServices
 
         enum Type { Type11 = 11, Type12 = 12, Type13 = 13 }
 
-        // private Dictionary<string, List<TagInfo>> orgItemNameListTagInfoPair;
+      //  private Dictionary<string, LastMeasurement> organisationItemLastMeasurements;
 
         public APIService()
         {
@@ -141,14 +141,14 @@ namespace ExternalServices
             o.TypeId == (int)Type.Type13);
         }
 
-        public async Task<List<LastMeasurement>> GetLastMeasurementsAsync()
+        public async Task<Dictionary<string, LastMeasurement>> GetLastMeasurementsAsync()
         {
             if (organization == null)
             {
                 await GetOrganization();
             }
 
-            List<LastMeasurement> lastMeasurements = new List<LastMeasurement>();
+            Dictionary<string, LastMeasurement> organisationItemLastMeasurements = new Dictionary<string, LastMeasurement>();
             LastMeasurement currentMeasurement;
 
             foreach (OrganizationItem organizationItem in organization.Items)
@@ -192,10 +192,10 @@ namespace ExternalServices
                 }
                 if (currentMeasurement != null)
                 {
-                    lastMeasurements.Add(currentMeasurement);
+                    organisationItemLastMeasurements.Add(organizationItem.Name, currentMeasurement);
                 }
             }
-            return lastMeasurements;
+            return organisationItemLastMeasurements;
         }
     }
 }
