@@ -111,7 +111,7 @@ namespace fire_detecting_system
         //Show label 
         public void DisplayLabel(IFeature clickedFeature)
         {
-            if(clickedFeature != null)
+            if (clickedFeature != null)
             {
                 Point clickedPoint = (Point)clickedFeature.Geometry;
                 Feature feature = features[clickedPoint];
@@ -131,13 +131,16 @@ namespace fire_detecting_system
                     LabelStyle label = new LabelStyle
                     {
                         Text = lastMeasurements[sensors.ElementAt(i++).Name].ToString(),
+                        Font = new Font { FontFamily = "Arial", Size = 13 },
                         BackColor = new Brush(Color.Black),
                         ForeColor = Color.White,
-                        Opacity = 70,
-                        MaxWidth = 60,
+                        Opacity = 50,
+                        MaxWidth = 70,
+                        LineHeight = 1.5,
                         WordWrap = LabelStyle.LineBreakMode.NoWrap,
+                        VerticalAlignment = LabelStyle.VerticalAlignmentEnum.Center,
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
-                        Offset = new Offset(0, -40)
+                        Offset = new Offset(20, 0)
                     };
                     feature.Styles.Add(label);
                     feature.Styles.Last().Enabled = false;
