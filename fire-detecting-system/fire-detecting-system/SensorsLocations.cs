@@ -134,8 +134,8 @@ namespace fire_detecting_system
                         BackColor = new Brush(Color.Black),
                         ForeColor = Color.White,
                         Opacity = 70,
-                        MaxWidth = 50,
-                        WordWrap = LabelStyle.LineBreakMode.WordWrap,
+                        MaxWidth = 60,
+                        WordWrap = LabelStyle.LineBreakMode.NoWrap,
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
                         Offset = new Offset(0, -40)
                     };

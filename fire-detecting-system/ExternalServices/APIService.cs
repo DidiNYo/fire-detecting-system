@@ -165,7 +165,7 @@ namespace ExternalServices
                 {
                     if (tagInfo.Type != null)
                     {
-                        currentMeasurement.MeasurementType = tagInfo.Type.Name;
+                        currentMeasurement.MeasurementTypes.Add(tagInfo.Type.Name);
 
                         if (tagInfo != null)
                         {
@@ -183,7 +183,7 @@ namespace ExternalServices
 
                             GraphQLResponse response = await graphQLClient.PostAsync(requesForTagIds);
                             List<TagItemValue> currentTagItemValue = response.GetDataFieldAs<List<TagItemValue>>("last");
-                            if (currentTagItemValue.Count != 0 && currentMeasurement.MeasurementType != null)
+                            if (currentTagItemValue.Count != 0 && currentMeasurement.MeasurementTypes != null)
                             {
                                 currentMeasurement.Values.Add(currentTagItemValue);
                             }

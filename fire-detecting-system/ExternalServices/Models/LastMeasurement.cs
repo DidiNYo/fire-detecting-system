@@ -12,33 +12,35 @@ namespace ExternalServices.Models
 
         public int OrganizationItemID { get; set; }
 
-        public string MeasurementType { get; set; }
+        public List<string> MeasurementTypes { get; set; }
 
         public List<List<TagItemValue>> Values { get; set; }
 
         public LastMeasurement()
         {
             Values = new List<List<TagItemValue>>();
+            MeasurementTypes = new List<string>();
         }
 
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-
+            int i = 0;
+            builder.Append("\n");
             foreach (var list in Values)
             {
                 foreach (var tagItemValue in list)
                 {
-                    builder.Append("Date: ");
                     builder.Append(tagItemValue.Date);
-                    builder.Append(" Value: ");
+                    builder.Append(" ");
+                    builder.Append(MeasurementTypes[i++]);
+                    builder.Append(": ");
                     builder.Append(tagItemValue.Value);
                     builder.Append("\n");
                 }
             }
-            
 
-            return string.Format("Name: {0}\nId: {1}\nType of measurement: {2}\n{3}", OrganizationItemName, OrganizationItemID, MeasurementType, builder.ToString());
+            return string.Format("Name: {0} (Id: {1})\n{2}", OrganizationItemName, OrganizationItemID, builder.ToString());
         }
     }
 }
