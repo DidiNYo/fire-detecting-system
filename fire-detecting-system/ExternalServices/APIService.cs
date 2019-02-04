@@ -156,7 +156,7 @@ namespace ExternalServices
                 currentMeasurement = new LastMeasurement();
                 if (organizationItem.Name != null)
                 {
-                    currentMeasurement.OrganizationItemName = organizationItem.Name;
+                    currentMeasurement.OrganizationItemName = organizationItem.Name.Trim();
                 }
                 currentMeasurement.OrganizationItemID = organizationItem.OrgItemId;
 

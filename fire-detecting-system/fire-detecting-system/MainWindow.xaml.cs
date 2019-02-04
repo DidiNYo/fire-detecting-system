@@ -45,7 +45,6 @@ namespace fire_detecting_system
 
             //For testing.
             APIService APIConnection = new APIService();
-            List<LastMeasurement> lastValues = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
         }
 
         //Show label on clicked sensor

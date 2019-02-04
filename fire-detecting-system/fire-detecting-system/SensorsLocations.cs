@@ -23,10 +23,13 @@ namespace fire_detecting_system
 
         private Dictionary<Point, Feature> features;
 
+        private Dictionary<string, LastMeasurement> lastMeasurements;
+
         public SensorsLocations(IMapControl mapControl, APIService APIConnection)
         {
             features = new Dictionary<Point, Feature>();
             sensors = Task.Run(() => APIConnection.GetOrganizationItemsAsync()).Result;
+            lastMeasurements = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
             map = new Map();
             mapControl.Map = CreateMap();
             AddSensorsLayer();
@@ -122,16 +125,18 @@ namespace fire_detecting_system
         // Initialize the labels.
         private IEnumerable<IFeature> InitializeLabels()
         {
+            int i = 0;
             return features.Values.Select(feature =>
                 {
                     LabelStyle label = new LabelStyle
                     {
-                        Text = "Some random example text",
-                        BackColor = new Brush(Color.Gray),
-                        ForeColor = Color.Black,
-                        MaxWidth = 10,
+                        Text = lastMeasurements[sensors.ElementAt(i++).Name].ToString(),
+                        BackColor = new Brush(Color.Black),
+                        ForeColor = Color.White,
+                        Opacity = 70,
+                        MaxWidth = 50,
                         WordWrap = LabelStyle.LineBreakMode.WordWrap,
-                        HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Center,
+                        HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
                         Offset = new Offset(0, -40)
                     };
                     feature.Styles.Add(label);
