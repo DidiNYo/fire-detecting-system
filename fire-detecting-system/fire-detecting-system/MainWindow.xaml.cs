@@ -63,7 +63,7 @@ namespace fire_detecting_system
             if (numberOfClicks == 1)
             {
                 //2. Remove it.
-                if(clickedFeature != null)
+                if (clickedFeature != null)
                 {
                     sensors.HideLabel(clickedFeature);
                 }
@@ -90,27 +90,30 @@ namespace fire_detecting_system
 
         private void Btn_ClickSaveCoords(object sender, System.Windows.RoutedEventArgs e)
         {
-            double xCoord = Convert.ToDouble(mainModel.Coords.XCoordinate, CultureInfo.InvariantCulture);
-            double yCoord = Convert.ToDouble(mainModel.Coords.YCoordinate, CultureInfo.InvariantCulture);
+            if (string.IsNullOrEmpty(mainModel.Coords.XCoordinate) == false && string.IsNullOrEmpty(mainModel.Coords.YCoordinate) == false)
+            {
+                double xCoord = Convert.ToDouble(mainModel.Coords.XCoordinate, CultureInfo.InvariantCulture);
+                double yCoord = Convert.ToDouble(mainModel.Coords.YCoordinate, CultureInfo.InvariantCulture);
 
-            MainMap.Map.Transformation = new MinimalTransformation();
+                MainMap.Map.Transformation = new MinimalTransformation();
 
-            //We need to transfer from one coordinate reference system to another - from CRS to CRS
-            //Mapsui.Geometries.Point(x, y); where x is the X-axis(E-coord) and y is the Y-axis(N-coord)
-            centerPoint = (Point)(MainMap.Map.Transformation.Transform("EPSG:4326", "EPSG:3857", new Point(xCoord, yCoord)));
+                //We need to transfer from one coordinate reference system to another - from CRS to CRS
+                //Mapsui.Geometries.Point(x, y); where x is the X-axis(E-coord) and y is the Y-axis(N-coord)
+                centerPoint = (Point)(MainMap.Map.Transformation.Transform("EPSG:4326", "EPSG:3857", new Point(xCoord, yCoord)));
 
-            //Map is centered with coordinates provided by the user
-            MainMap.Navigator.NavigateTo(new Point(centerPoint.X, centerPoint.Y), MainMap.Map.Resolutions[zoomLevel]);
+                //Map is centered with coordinates provided by the user
+                MainMap.Navigator.NavigateTo(new Point(centerPoint.X, centerPoint.Y), MainMap.Map.Resolutions[zoomLevel]);
 
-            //Return to the first tab after changed
-            MainTabs.SelectedIndex = 0;
+                //Return to the first tab after changed
+                MainTabs.SelectedIndex = 0;
+            }
         }
 
         private void Btn_ClickApplyZoomLevel(object sender, System.Windows.RoutedEventArgs e)
         {
             zoomLevel = Convert.ToInt32(mainModel.Zoom.Level);
-            
-            if(centerPoint != null)
+
+            if (centerPoint != null)
             {
                 MainMap.Navigator.NavigateTo(new Point(centerPoint.X, centerPoint.Y), MainMap.Map.Resolutions[zoomLevel]);
             }
@@ -118,10 +121,10 @@ namespace fire_detecting_system
             {
                 MainMap.Navigator.NavigateTo(MainMap.Map.Layers[1].Envelope.Centroid, MainMap.Map.Resolutions[zoomLevel]);
             }
-            
+
             //Return to the first tab after changed
             MainTabs.SelectedIndex = 0;
-            
+
         }
     }
 }
