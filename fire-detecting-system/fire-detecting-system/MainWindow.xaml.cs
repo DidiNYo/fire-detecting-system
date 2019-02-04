@@ -50,6 +50,7 @@ namespace fire_detecting_system
 
             //Default zoom level
             zoomLevel = GetConfiguration.ConfigurationInstance.ConfigurationData.ZoomLevel;
+            mainModel.Zoom.Level = zoomLevel.ToString();
 
             //For testing.
             APIService APIConnection = new APIService();

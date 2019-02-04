@@ -28,7 +28,7 @@
                     <Button Click="Btn_ClickSaveCoords" Content="Apply Coordinates" Canvas.Left="46.8" Canvas.Top="228.7" Width="216" Height="43"/>
                     <GroupBox Header="Default Zoom Level" Height="254.4" Canvas.Left="349.6" Canvas.Top="31.6" Width="249"/>
                     <Label Content="Zoom Level" Height="30" Canvas.Left="366.7" Canvas.Top="69.8" Width="216" FontWeight="Bold"/>
-                    <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Zoom.Level}" Canvas.Left="366.7" Canvas.Top="96.1" Width="216" Height="43" Name="ZoomLevel">
+                    <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Zoom.Level}" Canvas.Left="366.7" Canvas.Top="96.1" Width="216" Height="43">
                         <ComboBoxItem Content="1" />
                         <ComboBoxItem Content="2"/>
                         <ComboBoxItem Content="3"/>
