@@ -28,8 +28,8 @@
                     <Button Click="Btn_ClickSaveCoords" Content="Apply Coordinates" Canvas.Left="46.8" Canvas.Top="228.7" Width="216" Height="43"/>
                     <GroupBox Header="Default Zoom Level" Height="254.4" Canvas.Left="349.6" Canvas.Top="31.6" Width="249"/>
                     <Label Content="Zoom Level" Height="30" Canvas.Left="366.7" Canvas.Top="69.8" Width="216" FontWeight="Bold"/>
-                    <ComboBox Canvas.Left="366.7" Canvas.Top="96.1" Width="216" Height="43" IsEditable="True">
-                        <ComboBoxItem Content="1"/>
+                    <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Zoom.Level}" Canvas.Left="366.7" Canvas.Top="96.1" Width="216" Height="43">
+                        <ComboBoxItem Content="1" />
                         <ComboBoxItem Content="2"/>
                         <ComboBoxItem Content="3"/>
                         <ComboBoxItem Content="4"/>
@@ -49,17 +49,13 @@
                         <ComboBoxItem Content="18"/>
                         <ComboBoxItem Content="19"/>
                     </ComboBox>
-                    <Button Content="Apply Zoom Level" Height="43" Canvas.Left="366.7" Canvas.Top="228.7" Width="216"/>
+                    <Button Content="Apply Zoom Level" Height="43" Canvas.Left="366.7" Canvas.Top="228.7" Width="216" Click="Btn_ClickApplyZoomLevel"/>
                 </Canvas>
             </TabItem>
             <TabItem Header="Define Alarms" Padding="15,2"/>
             <TabItem Header="History" Padding="15,2"/>
-            <Label Content="Y Coordinates" Height="30" Width="216" FontWeight="Bold"/>
-
         </TabControl>
         <!--Main Tabs-->
     </Grid>
-
-
 </Controls:MetroWindow>
     

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace fire_detecting_system
@@ -24,6 +25,10 @@ namespace fire_detecting_system
         int numberOfClicks;
 
         IFeature clickedFeature;
+
+        int zoomLevel;
+
+        Point centerPoint;
 
         public MainWindow()
         {
@@ -42,6 +47,9 @@ namespace fire_detecting_system
 
             //Subscribe for clicked left mouse button event
             MainMap.Info += MaiMaplOnInfo;
+
+            //Default zoom level
+            zoomLevel = GetConfiguration.ConfigurationInstance.ConfigurationData.ZoomLevel;
 
             //For testing.
             APIService APIConnection = new APIService();
@@ -88,10 +96,25 @@ namespace fire_detecting_system
 
             //We need to transfer from one coordinate reference system to another - from CRS to CRS
             //Mapsui.Geometries.Point(x, y); where x is the X-axis(E-coord) and y is the Y-axis(N-coord)
-            Point point = (Point)(MainMap.Map.Transformation.Transform("EPSG:4326", "EPSG:3857", new Point(xCoord, yCoord)));
+            centerPoint = (Point)(MainMap.Map.Transformation.Transform("EPSG:4326", "EPSG:3857", new Point(xCoord, yCoord)));
 
             //Map is centered with coordinates provided by the user
-            MainMap.Navigator.NavigateTo(new Mapsui.Geometries.Point(point.X, point.Y), 19);
+            MainMap.Navigator.NavigateTo(new Point(centerPoint.X, centerPoint.Y), MainMap.Map.Resolutions[zoomLevel]);
+        }
+
+        private void Btn_ClickApplyZoomLevel(object sender, System.Windows.RoutedEventArgs e)
+        {
+            zoomLevel = Convert.ToInt32(mainModel.Zoom.Level);
+            
+            if(centerPoint != null)
+            {
+                MainMap.Navigator.NavigateTo(new Point(centerPoint.X, centerPoint.Y), MainMap.Map.Resolutions[zoomLevel]);
+            }
+            else
+            {
+                MainMap.Navigator.NavigateTo(MainMap.Map.Layers[1].Envelope.Centroid, MainMap.Map.Resolutions[zoomLevel]);
+            }
+            
         }
     }
 }
