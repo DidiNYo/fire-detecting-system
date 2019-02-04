@@ -100,6 +100,9 @@ namespace fire_detecting_system
 
             //Map is centered with coordinates provided by the user
             MainMap.Navigator.NavigateTo(new Point(centerPoint.X, centerPoint.Y), MainMap.Map.Resolutions[zoomLevel]);
+
+            //Return to the first tab after changed
+            MainTabs.SelectedIndex = 0;
         }
 
         private void Btn_ClickApplyZoomLevel(object sender, System.Windows.RoutedEventArgs e)
@@ -114,6 +117,9 @@ namespace fire_detecting_system
             {
                 MainMap.Navigator.NavigateTo(MainMap.Map.Layers[1].Envelope.Centroid, MainMap.Map.Resolutions[zoomLevel]);
             }
+            
+            //Return to the first tab after changed
+            MainTabs.SelectedIndex = 0;
             
         }
     }
