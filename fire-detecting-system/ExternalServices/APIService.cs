@@ -5,6 +5,7 @@ using GraphQL.Common.Response;
 using IdentityModel.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -143,6 +144,8 @@ namespace ExternalServices
 
         public async Task<Dictionary<string, LastMeasurement>> GetLastMeasurementsAsync()
         {
+            Debug.Print("STARTED GetLastMeasurementsAsync at {0}", DateTime.Now);
+
             if (organization == null)
             {
                 await GetOrganization();
@@ -195,6 +198,9 @@ namespace ExternalServices
                     organisationItemLastMeasurements.Add(organizationItem.Name, currentMeasurement);
                 }
             }
+
+            Debug.Print("ENDED GetLastMeasurementsAsync at {0}", DateTime.Now);
+
             return organisationItemLastMeasurements;
         }
     }

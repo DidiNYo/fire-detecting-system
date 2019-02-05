@@ -34,7 +34,18 @@ namespace fire_detecting_system
             mapControl.Map = CreateMap();
             AddSensorsLayer();
             AddLabelLayer();
+            CallGetLastMeasurementsAsync(APIConnection).GetAwaiter();
         }
+
+        private async Task CallGetLastMeasurementsAsync(APIService APIConnection)
+        {
+            while(true)
+            {
+                lastMeasurements = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
+                await Task.Delay(30000);
+
+            }
+        } 
 
         //Creates the main map
         private Map CreateMap()
