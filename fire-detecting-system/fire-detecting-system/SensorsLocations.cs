@@ -136,7 +136,7 @@ namespace fire_detecting_system
                         ForeColor = Color.White,
                         Opacity = 50,
                         MaxWidth = 70,
-                        LineHeight = 1.5,
+                       LineHeight = 1.2,
                         WordWrap = LabelStyle.LineBreakMode.NoWrap,
                         VerticalAlignment = LabelStyle.VerticalAlignmentEnum.Center,
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,

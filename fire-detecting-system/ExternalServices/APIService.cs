@@ -29,7 +29,7 @@ namespace ExternalServices
 
         enum Type { Type11 = 11, Type12 = 12, Type13 = 13 }
 
-      //  private Dictionary<string, LastMeasurement> organisationItemLastMeasurements;
+        //  private Dictionary<string, LastMeasurement> organisationItemLastMeasurements;
 
         public APIService()
         {
@@ -165,7 +165,6 @@ namespace ExternalServices
                 {
                     if (tagInfo.Type != null)
                     {
-                        currentMeasurement.MeasurementTypes.Add(tagInfo.Type.Name);
 
                         if (tagInfo != null)
                         {
@@ -183,9 +182,10 @@ namespace ExternalServices
 
                             GraphQLResponse response = await graphQLClient.PostAsync(requesForTagIds);
                             List<TagItemValue> currentTagItemValue = response.GetDataFieldAs<List<TagItemValue>>("last");
-                            if (currentTagItemValue.Count != 0 && currentMeasurement.MeasurementTypes != null)
+                            if (currentTagItemValue.Count != 0)
                             {
                                 currentMeasurement.Values.Add(currentTagItemValue);
+                                currentMeasurement.MeasurementTypes.Add(tagInfo.Type.Name);
                             }
                         }
                     }
