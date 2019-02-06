@@ -37,7 +37,7 @@ namespace fire_detecting_system
             mainModel = new MainViewModel();
 
             //Visualize the sensors on the map.
-            mainModel.Sensors = new SensorsLocations(MainMap, mainModel.APIConnection);
+            Loaded += OnLoaded;
 
             //For labels.
             numberOfClicks = 0;
@@ -54,6 +54,18 @@ namespace fire_detecting_system
 
             //For testing.
             APIService APIConnection = new APIService();
+        }
+
+        private void OnUpdateCompleted(object sender, EventArgs e)
+        {
+            MainMap.RefreshData();
+        }
+
+        private async void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            mainModel.Sensors = new SensorsLocations();
+            await mainModel.Sensors.InitializeAsync(MainMap, mainModel.APIConnection);
+            mainModel.Sensors.OnUpdateCompleted += OnUpdateCompleted;
         }
 
         //Show label on clicked sensor

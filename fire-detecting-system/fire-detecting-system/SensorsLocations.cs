@@ -8,6 +8,7 @@ using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.UI;
 using Mapsui.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -16,68 +17,68 @@ using System.Threading.Tasks;
 
 namespace fire_detecting_system
 {
-    public class SensorsLocations : ObservableObject 
+    public class SensorsLocations : ObservableObject
     {
         private Map map;
 
         private List<OrganizationItem> sensors;
 
-        private Dictionary<Point, Feature> features;
+        private Dictionary<string, Feature> features;
 
-        private Dictionary<string, LastMeasurement> lastMeasurements;
+        private ILayer labelLayer;
 
-        public SensorsLocations(IMapControl mapControl, APIService APIConnection)
+        public SensorsLocations()
         {
-            features = new Dictionary<Point, Feature>();
-            sensors = Task.Run(() => APIConnection.GetOrganizationItemsAsync()).Result;
-            lastMeasurements = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
+           
+        }   
+
+        public async Task InitializeAsync(IMapControl mapControl, APIService APIConnection)
+        {
+            features = new Dictionary<string, Feature>();
+            sensors = await APIConnection.GetOrganizationItemsAsync();
+
+            Dictionary<string, LastMeasurement> lastMeasurements = await APIConnection.GetLastMeasurementsAsync();
+
             map = new Map();
             mapControl.Map = CreateMap();
             AddSensorsLayer();
-            AddLabelLayer();
-            CallGetLastMeasurementsAsync(APIConnection).GetAwaiter();
+            AddLabelLayer(lastMeasurements);
+            CallGetLastMeasurements(APIConnection);
         }
 
-        private async Task CallGetLastMeasurementsAsync(APIService APIConnection)
+        private void CallGetLastMeasurements(APIService APIConnection)
         {
-            var newMeasurements = new Dictionary<string, LastMeasurement>();
-            while (true)
-            {
-                newMeasurements = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
-                // deep copy the items from newMeasurements to lastMeasurements
-                foreach (var item in newMeasurements)
-                {
-                    for (int i = 0; i < newMeasurements[item.Key].MeasurementTypes.Count; i++)
-                    {
-                        if (lastMeasurements[item.Key].MeasurementTypes[i] != newMeasurements[item.Key].MeasurementTypes[i])
-                        {
-                            lastMeasurements[item.Key].MeasurementTypes[i] = newMeasurements[item.Key].MeasurementTypes[i];
-                        }
-                    }
+            Task.Run(async () =>
+              {
+                  var newMeasurements = new Dictionary<string, LastMeasurement>();
+                  while (true)
+                  {
+                      newMeasurements = await APIConnection.GetLastMeasurementsAsync();
+                      UpdateLabels(newMeasurements.Values);
+                      await Task.Delay(30000);
+                  }
+              });
+        }
 
-                    for (int j = 0; j < newMeasurements[item.Key].Values.Count; j++)
-                    {
-                        for (int k = 0; k < newMeasurements[item.Key].Values[j].Count; k++)
-                        {
-                            if (lastMeasurements[item.Key].Values[j][k].Value != newMeasurements[item.Key].Values[j][k].Value &&
-                            lastMeasurements[item.Key].Values[j][k].Date != newMeasurements[item.Key].Values[j][k].Date)
-                            {
-                                lastMeasurements[item.Key].Values[j][k].Value = newMeasurements[item.Key].Values[j][k].Value;
-                                lastMeasurements[item.Key].Values[j][k].Date = newMeasurements[item.Key].Values[j][k].Date;
-                            }
-                        }
-                    }
+        public event EventHandler OnUpdateCompleted;
+
+        public void UpdateLabels(IEnumerable<LastMeasurement> measurements)
+        {
+            foreach (LastMeasurement measurement in measurements)
+            {
+                if(features.ContainsKey(measurement.OrganizationItemName))
+                {
+                    Feature currentFeature = features[measurement.OrganizationItemName];
+                    (currentFeature.Styles.Last() as LabelStyle).Text = measurement.ToString();
                 }
-                lastMeasurements = newMeasurements;
-                await Task.Delay(30000);
             }
+            OnUpdateCompleted?.Invoke(this, new EventArgs());
         }
 
         //Creates the main map
         private Map CreateMap()
         {
             map.Layers.Add(OpenStreetMap.CreateTileLayer());
-            map.Home = n => n.NavigateTo(map.Layers[1].Envelope.Centroid, map.Resolutions[10]);
             return map;
         }
 
@@ -108,28 +109,31 @@ namespace fire_detecting_system
                 double longitude = double.Parse(s.Properties.Find(p => p.Type == "Longitude").Value, CultureInfo.InvariantCulture);
                 double latitude = double.Parse(s.Properties.Find(p => p.Type == "Latitude").Value, CultureInfo.InvariantCulture);
                 Point point = SphericalMercator.FromLonLat(longitude, latitude);
+                feature["Name"] = s.Name;
                 feature.Geometry = point;
                 feature.Styles.Add(SmallRedDot());
                 feature.Styles.Add(RedOutline());
-                features.Add(point, new Feature(feature));
+                features.Add(s.Name, new Feature(feature));
                 return feature;
             });
         }
 
-        private void AddLabelLayer()
+        private void AddLabelLayer(Dictionary<string, LastMeasurement> lastMeasurements)
         {
-            map.Layers.Add(CreateLabelLayer());
+            labelLayer = CreateLabelLayer(lastMeasurements);
+            map.Layers.Add(labelLayer);
+            map.Home = n => n.NavigateTo(map.Layers[1].Envelope.Centroid, map.Resolutions[10]);
         }
 
 
         //Creates a layer with labels
-        private MemoryLayer CreateLabelLayer()
+        private MemoryLayer CreateLabelLayer(Dictionary<string, LastMeasurement> lastMeasurements)
         {
             return new MemoryLayer
             {
                 Name = "Labels",
                 IsMapInfoLayer = true,
-                DataSource = new MemoryProvider(InitializeLabels()),
+                DataSource = new MemoryProvider(InitializeLabels(lastMeasurements)),
                 Style = null
             };
         }
@@ -137,8 +141,7 @@ namespace fire_detecting_system
         //Remove label from clicked feature
         public void HideLabel(IFeature clickedFeature)
         {
-            Point clickedPoint = (Point)clickedFeature.Geometry;
-            Feature feature = features[clickedPoint];
+            Feature feature = features[clickedFeature["Name"] as string];
             if (feature != null)
             {
                 feature.Styles.Last().Enabled = false;
@@ -150,8 +153,7 @@ namespace fire_detecting_system
         {
             if (clickedFeature != null)
             {
-                Point clickedPoint = (Point)clickedFeature.Geometry;
-                Feature feature = features[clickedPoint];
+                Feature feature = features[clickedFeature["Name"] as string];
                 if (feature != null)
                 {
                     feature.Styles.Last().Enabled = true;
@@ -160,7 +162,7 @@ namespace fire_detecting_system
         }
 
         // Initialize the labels.
-        private IEnumerable<IFeature> InitializeLabels()
+        private IEnumerable<IFeature> InitializeLabels(Dictionary<string, LastMeasurement> lastMeasurements)
         {
             int i = 0;
             return features.Values.Select(feature =>
@@ -183,15 +185,6 @@ namespace fire_detecting_system
                     feature.Styles.Last().Enabled = false;
                     return feature;
                 });
-        }
-
-        private async Task CallInitializeLabels(IEnumerable<IFeature> initializeLabels)
-        {
-            while (true)
-            {
-                initializeLabels = InitializeLabels();
-                await Task.Delay(30000);
-            }
         }
 
         //The sensor position is marked with small red dot.

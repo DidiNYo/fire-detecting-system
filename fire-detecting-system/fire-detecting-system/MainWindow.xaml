@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:fire_detecting_system"
         xmlns:xaml="clr-namespace:Mapsui.UI.Wpf;assembly=Mapsui.UI.Wpf"
         mc:Ignorable="d"
-        Title="Fire Preventing System" 
+        Title="Fire Detecting System" 
         WindowState = "Maximized"
         WindowStyle = "None">
 
