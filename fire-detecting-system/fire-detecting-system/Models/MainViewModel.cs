@@ -18,6 +18,8 @@ namespace fire_detecting_system.Models
 
         public ZoomLevel Zoom { get; private set; }
 
+        public SensorsLocations Sensors { get; set; }
+
         public MainViewModel()
         {
             APIConnection = new APIService();

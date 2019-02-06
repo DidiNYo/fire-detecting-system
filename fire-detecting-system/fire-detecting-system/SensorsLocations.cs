@@ -11,11 +11,12 @@ using Mapsui.Utilities;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace fire_detecting_system
 {
-    public class SensorsLocations
+    public class SensorsLocations : ObservableObject 
     {
         private Map map;
 
@@ -39,13 +40,38 @@ namespace fire_detecting_system
 
         private async Task CallGetLastMeasurementsAsync(APIService APIConnection)
         {
-            while(true)
+            var newMeasurements = new Dictionary<string, LastMeasurement>();
+            while (true)
             {
-                lastMeasurements = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
-                await Task.Delay(30000);
+                newMeasurements = Task.Run(() => APIConnection.GetLastMeasurementsAsync()).Result;
+                // deep copy the items from newMeasurements to lastMeasurements
+                foreach (var item in newMeasurements)
+                {
+                    for (int i = 0; i < newMeasurements[item.Key].MeasurementTypes.Count; i++)
+                    {
+                        if (lastMeasurements[item.Key].MeasurementTypes[i] != newMeasurements[item.Key].MeasurementTypes[i])
+                        {
+                            lastMeasurements[item.Key].MeasurementTypes[i] = newMeasurements[item.Key].MeasurementTypes[i];
+                        }
+                    }
 
+                    for (int j = 0; j < newMeasurements[item.Key].Values.Count; j++)
+                    {
+                        for (int k = 0; k < newMeasurements[item.Key].Values[j].Count; k++)
+                        {
+                            if (lastMeasurements[item.Key].Values[j][k].Value != newMeasurements[item.Key].Values[j][k].Value &&
+                            lastMeasurements[item.Key].Values[j][k].Date != newMeasurements[item.Key].Values[j][k].Date)
+                            {
+                                lastMeasurements[item.Key].Values[j][k].Value = newMeasurements[item.Key].Values[j][k].Value;
+                                lastMeasurements[item.Key].Values[j][k].Date = newMeasurements[item.Key].Values[j][k].Date;
+                            }
+                        }
+                    }
+                }
+                lastMeasurements = newMeasurements;
+                await Task.Delay(30000);
             }
-        } 
+        }
 
         //Creates the main map
         private Map CreateMap()
@@ -147,7 +173,7 @@ namespace fire_detecting_system
                         ForeColor = Color.White,
                         Opacity = 50,
                         MaxWidth = 70,
-                       LineHeight = 1.2,
+                        LineHeight = 1.2,
                         WordWrap = LabelStyle.LineBreakMode.NoWrap,
                         VerticalAlignment = LabelStyle.VerticalAlignmentEnum.Center,
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
@@ -157,6 +183,15 @@ namespace fire_detecting_system
                     feature.Styles.Last().Enabled = false;
                     return feature;
                 });
+        }
+
+        private async Task CallInitializeLabels(IEnumerable<IFeature> initializeLabels)
+        {
+            while (true)
+            {
+                initializeLabels = InitializeLabels();
+                await Task.Delay(30000);
+            }
         }
 
         //The sensor position is marked with small red dot.

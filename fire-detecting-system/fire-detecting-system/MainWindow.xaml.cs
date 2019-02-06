@@ -20,7 +20,7 @@ namespace fire_detecting_system
     {
         MainViewModel mainModel;
 
-        SensorsLocations sensors;
+        //SensorsLocations sensors;
 
         int numberOfClicks;
 
@@ -37,7 +37,7 @@ namespace fire_detecting_system
             mainModel = new MainViewModel();
 
             //Visualize the sensors on the map.
-            sensors = new SensorsLocations(MainMap, mainModel.APIConnection);
+            mainModel.Sensors = new SensorsLocations(MainMap, mainModel.APIConnection);
 
             //For labels.
             numberOfClicks = 0;
@@ -65,21 +65,21 @@ namespace fire_detecting_system
                 //2. Remove it.
                 if (clickedFeature != null)
                 {
-                    sensors.HideLabel(clickedFeature);
+                    mainModel.Sensors.HideLabel(clickedFeature);
                 }
-                sensors.DisplayLabel(args.MapInfo.Feature);
+                mainModel.Sensors.DisplayLabel(args.MapInfo.Feature);
                 clickedFeature = args.MapInfo.Feature;
             }
             if (numberOfClicks == 2)
             {
                 if (clickedFeature != null)
                 {
-                    sensors.HideLabel(clickedFeature);
+                    mainModel.Sensors.HideLabel(clickedFeature);
                     clickedFeature = null;
                     //1. If second click is on a new feature show label for it.
                     if (args.MapInfo.Feature != null)
                     {
-                        sensors.DisplayLabel(args.MapInfo.Feature);
+                        mainModel.Sensors.DisplayLabel(args.MapInfo.Feature);
                         clickedFeature = args.MapInfo.Feature;
                     }
                 }
