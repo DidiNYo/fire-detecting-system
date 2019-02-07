@@ -52,7 +52,24 @@
                     <Button Content="Apply Zoom Level" Height="43" Canvas.Left="366.7" Canvas.Top="228.7" Width="216" Click="Btn_ClickApplyZoomLevel"/>
                 </Canvas>
             </TabItem>
-            <TabItem Header="Define Alarms" Padding="15,2"/>
+            <TabItem Header="Define Alarms" Padding="15,2">
+                <Canvas>
+                    <GroupBox Header="Define alarm" Width="681" Height="200" Canvas.Left="30" Canvas.Right="30" Canvas.Top="32"/>
+                    <Label Content="Sensor" Height="30" Canvas.Left="46" Canvas.Right="545" Canvas.Top="70" Width="180" FontWeight="Bold"/>
+                    <ComboBox SelectedValuePath="Content" Canvas.Left="46" Canvas.Right="545" Canvas.Top="100" Width="180" Height="43">
+                    </ComboBox>
+                    <Label Content="Measurement" Height="30" Canvas.Left="244" Canvas.Top="71" Width="170" FontWeight="Bold"/>
+                    <ComboBox SelectedValuePath="Content" Canvas.Left="244" Canvas.Top="100" Width="170" Height="43">
+                    </ComboBox>
+                    <Label Content="Sign" Height="30" Canvas.Left="433" Canvas.Top="71" Width="94" FontWeight="Bold"/>
+                    <ComboBox SelectedValuePath="Content" Canvas.Left="433" Canvas.Top="100" Width="94" Height="43">
+                    </ComboBox>
+                    <Label Content="Value" Height="30" Canvas.Left="545" Canvas.Top="71" Width="145" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Coords.YCoordinate}" Width="145" TextAlignment="Center"  FontSize="24" Canvas.Left="545" Height="43" Canvas.Top="100" Padding="2,0,0,0"/>
+                    <Button Content="Add new alarm" Canvas.Left="444" Canvas.Top="166" Width="112" Height="44"/>
+                    <Button Content="Clear" Canvas.Left="578" Canvas.Top="166" Width="112" Height="44"/>
+                </Canvas>
+            </TabItem>
             <TabItem Header="History" Padding="15,2"/>
         </TabControl>
         <!--Main Tabs-->
