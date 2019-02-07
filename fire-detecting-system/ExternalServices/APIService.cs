@@ -185,10 +185,10 @@ namespace ExternalServices
 
                             GraphQLResponse response = await graphQLClient.PostAsync(requesForTagIds);
                             List<TagItemValue> currentTagItemValue = response.GetDataFieldAs<List<TagItemValue>>("last");
+                            KeyValuePair<string, List<TagItemValue>> newKeyValuePair = new KeyValuePair<string, List<TagItemValue>>(tagInfo.Type.Name, currentTagItemValue);
                             if (currentTagItemValue.Count != 0)
                             {
-                                currentMeasurement.Values.Add(currentTagItemValue);
-                                currentMeasurement.MeasurementTypes.Add(tagInfo.Type.Name);
+                                currentMeasurement.Values.Add(newKeyValuePair);
                             }
                         }
                     }
