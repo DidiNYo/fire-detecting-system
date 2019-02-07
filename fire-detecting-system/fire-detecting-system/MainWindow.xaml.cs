@@ -54,6 +54,10 @@ namespace fire_detecting_system
 
             //For testing.
             APIService APIConnection = new APIService();
+
+           cmbBoxSensor.ItemsSource = LoadComboBoxSensorsNames();
+           cmbBoxSign.ItemsSource = LoadComboBoxSign();
+            cmbBoxZoomLevel.ItemsSource = LoadComboBoxZoomLevel();
         }
 
         private void OnUpdateCompleted(object sender, EventArgs e)
@@ -136,7 +140,65 @@ namespace fire_detecting_system
 
             //Return to the first tab after changed
             MainTabs.SelectedIndex = 0;
+        }
 
+        private List<string> LoadComboBoxZoomLevel()
+        {
+            List<string> levels = new List<string>();
+            levels.Add("1");
+            levels.Add("2");
+            levels.Add("3");
+            levels.Add("4");
+            levels.Add("5");
+            levels.Add("6");
+            levels.Add("7");
+            levels.Add("8");
+            levels.Add("9");
+            levels.Add("10");
+            levels.Add("11");
+            levels.Add("12");
+            levels.Add("13");
+            levels.Add("14");
+            levels.Add("15");
+            levels.Add("16");
+            levels.Add("17");
+            levels.Add("18");
+            levels.Add("19");
+            return levels;
+        }
+
+        //test
+        private List<string> LoadComboBoxSensorsNames()
+        {
+            List<string> names = new List<string>();
+            names.Add("Park Vitosha South");
+            names.Add("Sensor Yarebkovitsa");
+            names.Add("Chalin Valog T-1");
+            names.Add("Sensor Lisets");
+            names.Add("Chalin Valog CO2-1");
+            names.Add("Portable Camera");
+            names.Add("ASPires-Geo Camera");
+            names.Add("ASPires-Geo Weather Station");
+            names.Add("MqttTestSensor");
+            names.Add("Chalin Valog DP-1");
+            names.Add("Chalin Valog DP-2");
+            names.Add("Chalin Valog DP-3");
+            names.Add("Chalin Valog CO-1");
+            names.Add("Park Bansko");
+            names.Add("Fulda Camera");
+            names.Add("Sensor Е0072632");
+            names.Add("Sensor E0072715");
+            names.Add("Sensor E0000712");
+            names.Add("Sensor E0000713\r\n");
+            return names;
+        }
+
+        private List<char> LoadComboBoxSign()
+        {
+            List<char> signs = new List<char>();
+            signs.Add('>');
+            signs.Add('<');
+            return signs;
         }
     }
 }

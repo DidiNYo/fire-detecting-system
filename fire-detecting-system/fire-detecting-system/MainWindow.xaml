@@ -28,27 +28,7 @@
                     <Button Click="Btn_ClickSaveCoords" Content="Apply Coordinates" Canvas.Left="46.8" Canvas.Top="228.7" Width="216" Height="43"/>
                     <GroupBox Header="Default Zoom Level" Height="254.4" Canvas.Left="349.6" Canvas.Top="31.6" Width="249"/>
                     <Label Content="Zoom Level" Height="30" Canvas.Left="366.7" Canvas.Top="69.8" Width="216" FontWeight="Bold"/>
-                    <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Zoom.Level}" Canvas.Left="366.7" Canvas.Top="96.1" Width="216" Height="43">
-                        <ComboBoxItem Content="1" />
-                        <ComboBoxItem Content="2"/>
-                        <ComboBoxItem Content="3"/>
-                        <ComboBoxItem Content="4"/>
-                        <ComboBoxItem Content="5"/>
-                        <ComboBoxItem Content="6"/>
-                        <ComboBoxItem Content="7"/>
-                        <ComboBoxItem Content="8"/>
-                        <ComboBoxItem Content="9"/>
-                        <ComboBoxItem Content="10"/>
-                        <ComboBoxItem Content="11"/>
-                        <ComboBoxItem Content="12"/>
-                        <ComboBoxItem Content="13"/>
-                        <ComboBoxItem Content="14"/>
-                        <ComboBoxItem Content="15"/>
-                        <ComboBoxItem Content="16"/>
-                        <ComboBoxItem Content="17"/>
-                        <ComboBoxItem Content="18"/>
-                        <ComboBoxItem Content="19"/>
-                    </ComboBox>
+                    <ComboBox Name="cmbBoxZoomLevel" SelectedValue="{Binding Zoom.Level}" Canvas.Left="366.7" Canvas.Top="96.1" Width="216" Height="43"/>
                     <Button Content="Apply Zoom Level" Height="43" Canvas.Left="366.7" Canvas.Top="228.7" Width="216" Click="Btn_ClickApplyZoomLevel"/>
                 </Canvas>
             </TabItem>
@@ -56,16 +36,13 @@
                 <Canvas>
                     <GroupBox Header="Define alarm" Width="681" Height="200" Canvas.Left="30" Canvas.Right="30" Canvas.Top="32"/>
                     <Label Content="Sensor" Height="30" Canvas.Left="46" Canvas.Right="545" Canvas.Top="70" Width="180" FontWeight="Bold"/>
-                    <ComboBox SelectedValuePath="Content" Canvas.Left="46" Canvas.Right="545" Canvas.Top="100" Width="180" Height="43">
-                    </ComboBox>
+                    <ComboBox Name="cmbBoxSensor" Canvas.Left="46" Canvas.Right="545" Canvas.Top="100" Width="180" Height="43"/>
                     <Label Content="Measurement" Height="30" Canvas.Left="244" Canvas.Top="71" Width="170" FontWeight="Bold"/>
-                    <ComboBox SelectedValuePath="Content" Canvas.Left="244" Canvas.Top="100" Width="170" Height="43">
-                    </ComboBox>
+                    <ComboBox Name="cmbBoxMeasurement" Canvas.Left="244" Canvas.Top="100" Width="170" Height="43"/>
                     <Label Content="Sign" Height="30" Canvas.Left="433" Canvas.Top="71" Width="94" FontWeight="Bold"/>
-                    <ComboBox SelectedValuePath="Content" Canvas.Left="433" Canvas.Top="100" Width="94" Height="43">
-                    </ComboBox>
+                    <ComboBox Name="cmbBoxSign" Canvas.Left="433" Canvas.Top="100" Width="94" Height="43"/>
                     <Label Content="Value" Height="30" Canvas.Left="545" Canvas.Top="71" Width="145" FontWeight="Bold"/>
-                    <TextBox Text="{Binding Coords.YCoordinate}" Width="145" TextAlignment="Center"  FontSize="24" Canvas.Left="545" Height="43" Canvas.Top="100" Padding="2,0,0,0"/>
+                    <TextBox Width="145" TextAlignment="Center"  FontSize="24" Canvas.Left="545" Height="43" Canvas.Top="100" Padding="2,0,0,0"/>
                     <Button Content="Add new alarm" Canvas.Left="444" Canvas.Top="166" Width="112" Height="44"/>
                     <Button Content="Clear" Canvas.Left="578" Canvas.Top="166" Width="112" Height="44"/>
                 </Canvas>
