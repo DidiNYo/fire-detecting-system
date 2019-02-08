@@ -49,8 +49,12 @@ namespace fire_detecting_system
             MainMap.Info += MaiMaplOnInfo;
 
             //Default zoom level
-            zoomLevel = GetConfiguration.ConfigurationInstance.ConfigurationData.ZoomLevel;
+            zoomLevel = GetSettings.GetSettingsInstance.SettingsData.ZoomLevel;
             mainModel.Zoom.Level = zoomLevel.ToString();
+
+            //Default center point
+            mainModel.Coords.XCoordinate = (GetSettings.GetSettingsInstance.SettingsData.XCoord).ToString(CultureInfo.InvariantCulture);
+            mainModel.Coords.YCoordinate = (GetSettings.GetSettingsInstance.SettingsData.YCoord).ToString(CultureInfo.InvariantCulture);
 
             //For testing.
             APIService APIConnection = new APIService();

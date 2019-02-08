@@ -79,8 +79,10 @@ namespace fire_detecting_system
         private Map CreateMap()
         {
             map.Layers.Add(OpenStreetMap.CreateTileLayer());
-            Point center = SphericalMercator.FromLonLat(23.542328, 42.142532);
-            map.Home = n => n.NavigateTo(center, map.Resolutions[10]);
+            double xCoord = GetSettings.GetSettingsInstance.SettingsData.XCoord;
+            double yCoord = GetSettings.GetSettingsInstance.SettingsData.YCoord;
+            Point center = SphericalMercator.FromLonLat(xCoord, yCoord);
+            map.Home = n => n.NavigateTo(center, map.Resolutions[GetSettings.GetSettingsInstance.SettingsData.ZoomLevel]);
             return map;
         }
 

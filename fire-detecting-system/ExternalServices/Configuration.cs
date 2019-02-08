@@ -16,8 +16,6 @@ namespace ExternalServices
 
         public string IdentityServer { get; set; }
 
-        public int ZoomLevel { get; set; }
-
         public int SecondsToRefresh { get; set; }
     }
 }
