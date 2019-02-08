@@ -10,6 +10,7 @@ using Mapsui.UI.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -57,7 +58,6 @@ namespace fire_detecting_system
             mainModel.Coords.XCoordinate = (GetSettings.GetSettingsInstance.SettingsData.XCoord).ToString(CultureInfo.InvariantCulture);
             mainModel.Coords.YCoordinate = (GetSettings.GetSettingsInstance.SettingsData.YCoord).ToString(CultureInfo.InvariantCulture);
 
-            cmbBoxSign.ItemsSource = LoadComboBoxSign();
             cmbBoxZoomLevel.ItemsSource = LoadComboBoxZoomLevel();
         }
 
@@ -75,6 +75,7 @@ namespace fire_detecting_system
                 names.Add(item.Name);
             }
             cmbBoxSensor.ItemsSource = names;
+            cmbBoxSign.ItemsSource = LoadComboBoxSign();
             mainModel.Sensors.OnUpdateCompleted += OnUpdateCompleted;
         }
 
@@ -134,9 +135,26 @@ namespace fire_detecting_system
             zoomLevel = Convert.ToInt32(mainModel.Zoom.Level);
 
             MainMap.Navigator.NavigateTo(centerPoint, MainMap.Map.Resolutions[zoomLevel]);
-           
+
             //Return to the first tab after changed
             MainTabs.SelectedIndex = 0;
+        }
+
+        private void cmbBoxSensorName_SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (cmbBoxSensor.SelectedValue != null)
+            {
+                string name = cmbBoxSensor.SelectedValue.ToString();
+                if (mainModel.Sensors.LastMeasurements[name] != null)
+                {
+                    LastMeasurement currentMeasurment = mainModel.Sensors.LastMeasurements[name];
+                    if (currentMeasurment.Values.Count > 0)
+                    {
+                        IEnumerable<string> data = currentMeasurment.Values.Select(d => d.Name);
+                        cmbBoxMeasurement.ItemsSource = data;
+                    }
+                }
+            }
         }
 
         private string[] LoadComboBoxZoomLevel()
@@ -145,12 +163,18 @@ namespace fire_detecting_system
             return zoomLevels.Levels;
         }
 
-        private List<char> LoadComboBoxSign()
+        private char[] LoadComboBoxSign()
         {
-            List<char> signs = new List<char>();
-            signs.Add('>');
-            signs.Add('<');
+            char[] signs = { '>', '<', '=' };
             return signs;
+        }
+
+        private void btn_ClickClear(object sender, System.Windows.RoutedEventArgs e)
+        {
+            cmbBoxSensor.SelectedItem = null;
+            cmbBoxMeasurement.SelectedItem = null;
+            cmbBoxSign.SelectedItem = null;
+            alarmValue.Text = "";
         }
     }
 }

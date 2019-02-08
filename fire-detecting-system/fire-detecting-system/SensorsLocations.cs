@@ -23,6 +23,8 @@ namespace fire_detecting_system
 
         public List<OrganizationItem> Sensors { get; private set; }
 
+        public Dictionary<string, LastMeasurement> LastMeasurements { get; private set; }
+
         private Dictionary<string, Feature> features;
 
         private ILayer labelLayer;
@@ -36,11 +38,11 @@ namespace fire_detecting_system
         {
             features = new Dictionary<string, Feature>();
             Sensors = await APIConnection.GetOrganizationItemsAsync();
-            Dictionary<string, LastMeasurement> lastMeasurements = await APIConnection.GetLastMeasurementsAsync();
+            LastMeasurements = await APIConnection.GetLastMeasurementsAsync();
             map = new Map();
             mapControl.Map = CreateMap();
             AddSensorsLayer();
-            AddLabelLayer(lastMeasurements);
+            AddLabelLayer(LastMeasurements);
             CallGetLastMeasurements(APIConnection);
         }
 
