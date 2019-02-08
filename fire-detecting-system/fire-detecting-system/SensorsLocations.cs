@@ -29,8 +29,8 @@ namespace fire_detecting_system
 
         public SensorsLocations()
         {
-           
-        }   
+
+        }
 
         public async Task InitializeAsync(IMapControl mapControl, APIService APIConnection)
         {
@@ -66,7 +66,7 @@ namespace fire_detecting_system
         {
             foreach (LastMeasurement measurement in measurements)
             {
-                if(features.ContainsKey(measurement.OrganizationItemName))
+                if (features.ContainsKey(measurement.OrganizationItemName))
                 {
                     Feature currentFeature = features[measurement.OrganizationItemName];
                     (currentFeature.Styles.Last() as LabelStyle).Text = measurement.ToString();
@@ -79,6 +79,8 @@ namespace fire_detecting_system
         private Map CreateMap()
         {
             map.Layers.Add(OpenStreetMap.CreateTileLayer());
+            Point center = SphericalMercator.FromLonLat(23.542328, 42.142532);
+            map.Home = n => n.NavigateTo(center, map.Resolutions[10]);
             return map;
         }
 
@@ -122,7 +124,6 @@ namespace fire_detecting_system
         {
             labelLayer = CreateLabelLayer(lastMeasurements);
             map.Layers.Add(labelLayer);
-            map.Home = n => n.NavigateTo(map.Layers[1].Envelope.Centroid, map.Resolutions[10]);
         }
 
 

@@ -111,14 +111,12 @@ namespace fire_detecting_system
                 double xCoord = Convert.ToDouble(mainModel.Coords.XCoordinate, CultureInfo.InvariantCulture);
                 double yCoord = Convert.ToDouble(mainModel.Coords.YCoordinate, CultureInfo.InvariantCulture);
 
-                MainMap.Map.Transformation = new MinimalTransformation();
-
                 //We need to transfer from one coordinate reference system to another - from CRS to CRS
                 //Mapsui.Geometries.Point(x, y); where x is the X-axis(E-coord) and y is the Y-axis(N-coord)
-                centerPoint = (Point)(MainMap.Map.Transformation.Transform("EPSG:4326", "EPSG:3857", new Point(xCoord, yCoord)));
+                centerPoint = SphericalMercator.FromLonLat(xCoord, yCoord);
 
                 //Map is centered with coordinates provided by the user
-                MainMap.Navigator.NavigateTo(new Point(centerPoint.X, centerPoint.Y), MainMap.Map.Resolutions[zoomLevel]);
+                MainMap.Navigator.NavigateTo(centerPoint, MainMap.Map.Resolutions[zoomLevel]);
 
                 //Return to the first tab after changed
                 MainTabs.SelectedIndex = 0;
