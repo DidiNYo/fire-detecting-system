@@ -31,13 +31,15 @@ namespace fire_detecting_system
 
         Point centerPoint;
 
+        List<AlarmRule> alarms;
+
         public MainWindow()
         {
             InitializeComponent();
 
             mainModel = new MainViewModel();
 
-            //Visualize the sensors on the map.
+            //Load sensors on the map
             Loaded += OnLoaded;
 
             //For labels.
@@ -50,6 +52,7 @@ namespace fire_detecting_system
             MainMap.Info += MaiMaplOnInfo;
 
             //Default zoom level
+            cmbBoxZoomLevel.ItemsSource = LoadComboBoxZoomLevel();
             zoomLevel = GetSettings.GetSettingsInstance.SettingsData.ZoomLevel;
             mainModel.Zoom.Level = zoomLevel.ToString();
 
@@ -58,7 +61,7 @@ namespace fire_detecting_system
             mainModel.Coords.XCoordinate = (GetSettings.GetSettingsInstance.SettingsData.XCoord).ToString(CultureInfo.InvariantCulture);
             mainModel.Coords.YCoordinate = (GetSettings.GetSettingsInstance.SettingsData.YCoord).ToString(CultureInfo.InvariantCulture);
 
-            cmbBoxZoomLevel.ItemsSource = LoadComboBoxZoomLevel();
+            alarms = new List<AlarmRule>();
         }
 
         private void OnUpdateCompleted(object sender, EventArgs e)
@@ -192,6 +195,20 @@ namespace fire_detecting_system
             };
 
             File.WriteAllText("Settings.json", JsonConvert.SerializeObject(changedSettings));
+        }
+
+        private void btn_ClickAddNewAlarm(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(mainModel.Rule.SensorName) == false &&
+                string.IsNullOrEmpty(mainModel.Rule.MeasurementType) == false &&
+                string.IsNullOrEmpty(mainModel.Rule.Sign) == false)
+            {
+                alarms.Add(new AlarmRule(mainModel.Rule.SensorName,
+                                           mainModel.Rule.MeasurementType,
+                                           mainModel.Rule.Sign,
+                                           mainModel.Rule.Value));
+
+            }
         }
     }
 }

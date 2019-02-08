@@ -20,12 +20,15 @@ namespace fire_detecting_system.Models
 
         public SensorsLocations Sensors { get; set; }
 
+        public AlarmRule Rule { get; set; }
+
         public MainViewModel()
         {
             APIConnection = new APIService();
             Coords = new Coordinates();
             Zoom = new ZoomLevel();
             Sensors = new SensorsLocations();
+            Rule = new AlarmRule();
         }
     }
 }

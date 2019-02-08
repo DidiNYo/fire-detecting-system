@@ -130,6 +130,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\AlarmRule.cs" />
     <Compile Include="Models\MainViewModel.cs" />
     <Compile Include="Models\Coordinates.cs" />
     <Compile Include="Models\ZoomLevel.cs" />

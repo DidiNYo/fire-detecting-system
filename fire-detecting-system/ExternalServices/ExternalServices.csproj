@@ -109,7 +109,6 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="GetConfiguration.cs" />
     <Compile Include="GetSettings.cs" />
-    <Compile Include="Models\AlarmRule.cs" />
     <Compile Include="Models\LastMeasurement.cs" />
     <Compile Include="Models\MeasurementValue.cs" />
     <Compile Include="Models\Organization.cs" />
