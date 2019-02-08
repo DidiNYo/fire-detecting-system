@@ -61,7 +61,6 @@ namespace fire_detecting_system
             mainModel.Coords.XCoordinate = (GetSettings.GetSettingsInstance.SettingsData.XCoord).ToString(CultureInfo.InvariantCulture);
             mainModel.Coords.YCoordinate = (GetSettings.GetSettingsInstance.SettingsData.YCoord).ToString(CultureInfo.InvariantCulture);
 
-            alarms = new List<AlarmRule>();
         }
 
         private void OnUpdateCompleted(object sender, EventArgs e)
@@ -72,13 +71,22 @@ namespace fire_detecting_system
         private async void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
             await mainModel.Sensors.InitializeAsync(MainMap, mainModel.APIConnection);
-            List<string> names = new List<string>();
-            foreach (OrganizationItem item in mainModel.Sensors.Sensors)
-            {
-                names.Add(item.Name);
-            }
+
+            IEnumerable<string> names = mainModel.Sensors.Sensors.Select(n => n.Name);
             cmbBoxSensor.ItemsSource = names;
+
             cmbBoxSign.ItemsSource = LoadComboBoxSign();
+
+            string fileResult = File.ReadAllText("AlarmRules.json");
+            if(string.IsNullOrEmpty(fileResult) == false)
+            {
+                alarms = JsonConvert.DeserializeObject<List<AlarmRule>>(fileResult);
+            }
+            else
+            {
+                alarms = new List<AlarmRule>();
+            }
+            lstDefinedAlarms.ItemsSource = alarms;
             mainModel.Sensors.OnUpdateCompleted += OnUpdateCompleted;
         }
 
@@ -211,6 +219,7 @@ namespace fire_detecting_system
             }
 
             File.WriteAllText("AlarmRules.json", JsonConvert.SerializeObject(alarms));
+            lstDefinedAlarms.Items.Refresh();
         }
     }
 }

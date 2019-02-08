@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Fire Detecting System" 
         WindowState = "Maximized"
-        WindowStyle = "None">
+        WindowStyle = "None" d:DesignWidth="1683.2" d:DesignHeight="1280.28">
 
     <Grid>
         <!--Main Tabs-->
@@ -36,15 +36,33 @@
                 <Canvas>
                     <GroupBox Header="Define alarm" Width="681" Height="200" Canvas.Left="30" Canvas.Right="30" Canvas.Top="32"/>
                     <Label Content="Sensor" Height="30" Canvas.Left="46" Canvas.Right="545" Canvas.Top="70" Width="180" FontWeight="Bold"/>
-                    <ComboBox Name="cmbBoxSensor" SelectedValue="{Binding Rule.SensorName}" SelectionChanged="cmbBoxSensorName_SelectionChanged" Canvas.Left="46" Canvas.Right="545" Canvas.Top="100" Width="180" Height="43"/>
-                    <Label Content="Measurement" Height="30" Canvas.Left="244" Canvas.Top="71" Width="170" FontWeight="Bold"/>
-                    <ComboBox Name="cmbBoxMeasurement" SelectedValue="{Binding Rule.MeasurementType}" Canvas.Left="244" Canvas.Top="100" Width="170" Height="43"/>
-                    <Label Content="Sign" Height="30" Canvas.Left="433" Canvas.Top="71" Width="94" FontWeight="Bold"/>
-                    <ComboBox Name="cmbBoxSign" SelectedValue="{Binding Rule.Sign}" Canvas.Left="433" Canvas.Top="100" Width="94" Height="43"/>
-                    <Label Content="Value" Height="30" Canvas.Left="545" Canvas.Top="71" Width="145" FontWeight="Bold"/>
-                    <TextBox Name="alarmValue" Text="{Binding Rule.Value}" Width="145" TextAlignment="Center"  FontSize="24" Canvas.Left="545" Height="43" Canvas.Top="100" Padding="2,0,0,0"/>
+                    <ComboBox Name="cmbBoxSensor" SelectedValue="{Binding Rule.SensorName}" SelectionChanged="cmbBoxSensorName_SelectionChanged" Canvas.Left="46" Canvas.Right="545" Canvas.Top="100" Width="211.2" Height="43"/>
+                    <Label Content="Measurement" Height="30" Canvas.Left="275.2" Canvas.Top="71" Width="186.8" FontWeight="Bold"/>
+                    <ComboBox Name="cmbBoxMeasurement" SelectedValue="{Binding Rule.MeasurementType}" Canvas.Left="275.2" Canvas.Top="100" Width="202" Height="43"/>
+                    <Label Content="Sign" Height="30" Canvas.Left="494.8" Canvas.Top="71" Width="61.2" FontWeight="Bold"/>
+                    <ComboBox Name="cmbBoxSign" SelectedValue="{Binding Rule.Sign}" Canvas.Left="494.8" Canvas.Top="100" Width="61.2" Height="43"/>
+                    <Label Content="Value" Height="30" Canvas.Left="578" Canvas.Top="71" Width="112" FontWeight="Bold"/>
+                    <TextBox Name="alarmValue" Text="{Binding Rule.Value}" Width="112" TextAlignment="Center"  FontSize="24" Canvas.Left="578" Height="43" Canvas.Top="101" Padding="2,0,0,0"/>
                     <Button Content="Add new alarm" Canvas.Left="444" Canvas.Top="166" Width="112" Height="44" Click="btn_ClickAddNewAlarm"/>
                     <Button Content="Clear" Canvas.Left="578" Canvas.Top="166" Width="112" Height="44" Click="btn_ClickClear"/>
+                    <ListView Name="lstDefinedAlarms" Height="223.2" Width="552.8" Canvas.Left="778.8" Canvas.Top="32">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Sensor" Width="150" DisplayMemberBinding="{Binding SensorName}"/>
+                                <GridViewColumn Header="Measurement" Width="150" DisplayMemberBinding="{Binding MeasurementType}"/>
+                                <GridViewColumn Header="Sign" Width="50" DisplayMemberBinding="{Binding Sign}"/>
+                                <GridViewColumn Header="Value" Width="100" DisplayMemberBinding="{Binding Value}"/>
+                                <GridViewColumn Header="Options" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Delete"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
                 </Canvas>
             </TabItem>
             <TabItem Header="History" Padding="15,2"/>
