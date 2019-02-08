@@ -29,7 +29,7 @@ namespace fire_detecting_system
 
         Point centerPoint;
 
-        List<string> names;
+
 
         public MainWindow()
         {
@@ -69,8 +69,8 @@ namespace fire_detecting_system
         private async void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
             await mainModel.Sensors.InitializeAsync(MainMap, mainModel.APIConnection);
-            names = new List<string>();
-            foreach (var item in mainModel.Sensors.Sensors)
+            List<string> names = new List<string>();
+            foreach (OrganizationItem item in mainModel.Sensors.Sensors)
             {
                 names.Add(item.Name);
             }
@@ -163,9 +163,9 @@ namespace fire_detecting_system
             return zoomLevels.Levels;
         }
 
-        private char[] LoadComboBoxSign()
+        private string[] LoadComboBoxSign()
         {
-            char[] signs = { '>', '<', '=' };
+            string[] signs = { ">", "<", "=", ">=", "<=" };
             return signs;
         }
 
