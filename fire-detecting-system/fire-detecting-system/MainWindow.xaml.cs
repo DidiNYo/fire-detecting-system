@@ -53,6 +53,7 @@ namespace fire_detecting_system
             mainModel.Zoom.Level = zoomLevel.ToString();
 
             //Default center point
+            centerPoint = SphericalMercator.FromLonLat(GetSettings.GetSettingsInstance.SettingsData.XCoord, GetSettings.GetSettingsInstance.SettingsData.YCoord);
             mainModel.Coords.XCoordinate = (GetSettings.GetSettingsInstance.SettingsData.XCoord).ToString(CultureInfo.InvariantCulture);
             mainModel.Coords.YCoordinate = (GetSettings.GetSettingsInstance.SettingsData.YCoord).ToString(CultureInfo.InvariantCulture);
 
@@ -128,15 +129,8 @@ namespace fire_detecting_system
         {
             zoomLevel = Convert.ToInt32(mainModel.Zoom.Level);
 
-            if (centerPoint != null)
-            {
-                MainMap.Navigator.NavigateTo(new Point(centerPoint.X, centerPoint.Y), MainMap.Map.Resolutions[zoomLevel]);
-            }
-            else
-            {
-                MainMap.Navigator.NavigateTo(MainMap.Map.Layers[1].Envelope.Centroid, MainMap.Map.Resolutions[zoomLevel]);
-            }
-
+            MainMap.Navigator.NavigateTo(centerPoint, MainMap.Map.Resolutions[zoomLevel]);
+           
             //Return to the first tab after changed
             MainTabs.SelectedIndex = 0;
         }
