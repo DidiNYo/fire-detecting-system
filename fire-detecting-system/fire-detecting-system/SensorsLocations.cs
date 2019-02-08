@@ -55,7 +55,7 @@ namespace fire_detecting_system
                   {
                       newMeasurements = await APIConnection.GetLastMeasurementsAsync();
                       UpdateLabels(newMeasurements.Values);
-                      await Task.Delay(30000);
+                      await Task.Delay(GetConfiguration.ConfigurationInstance.ConfigurationData.SecondsToRefresh);
                   }
               });
         }
