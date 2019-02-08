@@ -111,6 +111,7 @@
     <Compile Include="GetSettings.cs" />
     <Compile Include="Models\AlarmRule.cs" />
     <Compile Include="Models\LastMeasurement.cs" />
+    <Compile Include="Models\MeasurementValue.cs" />
     <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\OrganizationItem.cs" />
     <Compile Include="Models\Property.cs" />

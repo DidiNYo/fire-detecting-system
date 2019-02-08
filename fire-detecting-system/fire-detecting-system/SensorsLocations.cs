@@ -48,7 +48,7 @@ namespace fire_detecting_system
         {
             Task.Run(async () =>
               {
-                  var newMeasurements = new Dictionary<string, LastMeasurement>();
+                  Dictionary<string, LastMeasurement> newMeasurements = new Dictionary<string, LastMeasurement>();
                   while (true)
                   {
                       newMeasurements = await APIConnection.GetLastMeasurementsAsync();

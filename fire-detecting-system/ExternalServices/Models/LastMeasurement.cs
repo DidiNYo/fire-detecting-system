@@ -12,25 +12,24 @@ namespace ExternalServices.Models
 
         public int OrganizationItemID { get; set; }
 
-        public List<KeyValuePair<string, List<TagItemValue>>> Values { get; set; }
+        public List<MeasurementValue> Values { get; set; }
 
         public LastMeasurement()
         {
-            Values = new List<KeyValuePair<string, List<TagItemValue>>>();
+            Values = new List<MeasurementValue>();
         }
 
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            int i = 0;
             builder.Append("\n");
             foreach (var list in Values)
             {
-                foreach (var tagItemValue in list.Value)
+                foreach (var tagItemValue in list.TagItemValues)
                 {
                     builder.Append(tagItemValue.Date);
                     builder.Append(" ");
-                    builder.Append(list.Key);
+                    builder.Append(list.Name);
                     builder.Append(": ");
                     builder.Append(tagItemValue.Value);
                     builder.Append("\n");
