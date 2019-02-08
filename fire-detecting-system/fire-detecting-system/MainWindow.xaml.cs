@@ -209,6 +209,8 @@ namespace fire_detecting_system
                                            mainModel.Rule.Value));
 
             }
+
+            File.WriteAllText("AlarmRules.json", JsonConvert.SerializeObject(alarms));
         }
     }
 }
