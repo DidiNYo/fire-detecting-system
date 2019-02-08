@@ -7,9 +7,11 @@ using Mapsui.Projection;
 using Mapsui.Providers;
 using Mapsui.UI;
 using Mapsui.UI.Wpf;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -28,8 +30,6 @@ namespace fire_detecting_system
         int zoomLevel;
 
         Point centerPoint;
-
-
 
         public MainWindow()
         {
@@ -125,6 +125,8 @@ namespace fire_detecting_system
                 //Map is centered with coordinates provided by the user
                 MainMap.Navigator.NavigateTo(centerPoint, MainMap.Map.Resolutions[zoomLevel]);
 
+                SaveSettingsInFile(centerPoint, zoomLevel);
+
                 //Return to the first tab after changed
                 MainTabs.SelectedIndex = 0;
             }
@@ -135,6 +137,8 @@ namespace fire_detecting_system
             zoomLevel = Convert.ToInt32(mainModel.Zoom.Level);
 
             MainMap.Navigator.NavigateTo(centerPoint, MainMap.Map.Resolutions[zoomLevel]);
+
+            SaveSettingsInFile(centerPoint, zoomLevel);
 
             //Return to the first tab after changed
             MainTabs.SelectedIndex = 0;
@@ -175,6 +179,19 @@ namespace fire_detecting_system
             cmbBoxMeasurement.SelectedItem = null;
             cmbBoxSign.SelectedItem = null;
             alarmValue.Text = "";
+        }
+
+        private void SaveSettingsInFile(Point currentPoint, int zoomLevel)
+        {
+            Point changedPoint = SphericalMercator.ToLonLat(currentPoint.X, currentPoint.Y);
+            Settings changedSettings = new Settings
+            {
+                ZoomLevel = zoomLevel,
+                YCoord = changedPoint.Y,
+                XCoord = changedPoint.X
+            };
+
+            File.WriteAllText("Settings.json", JsonConvert.SerializeObject(changedSettings));
         }
     }
 }
