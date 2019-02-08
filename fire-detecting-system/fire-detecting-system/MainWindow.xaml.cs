@@ -56,11 +56,8 @@ namespace fire_detecting_system
             mainModel.Coords.XCoordinate = (GetSettings.GetSettingsInstance.SettingsData.XCoord).ToString(CultureInfo.InvariantCulture);
             mainModel.Coords.YCoordinate = (GetSettings.GetSettingsInstance.SettingsData.YCoord).ToString(CultureInfo.InvariantCulture);
 
-            //For testing.
-            APIService APIConnection = new APIService();
-
-           cmbBoxSensor.ItemsSource = LoadComboBoxSensorsNames();
-           cmbBoxSign.ItemsSource = LoadComboBoxSign();
+            cmbBoxSensor.ItemsSource = LoadComboBoxSensorsNames();
+            cmbBoxSign.ItemsSource = LoadComboBoxSign();
             cmbBoxZoomLevel.ItemsSource = LoadComboBoxZoomLevel();
         }
 
@@ -144,29 +141,10 @@ namespace fire_detecting_system
             MainTabs.SelectedIndex = 0;
         }
 
-        private List<string> LoadComboBoxZoomLevel()
+        private string[] LoadComboBoxZoomLevel()
         {
-            List<string> levels = new List<string>();
-            levels.Add("1");
-            levels.Add("2");
-            levels.Add("3");
-            levels.Add("4");
-            levels.Add("5");
-            levels.Add("6");
-            levels.Add("7");
-            levels.Add("8");
-            levels.Add("9");
-            levels.Add("10");
-            levels.Add("11");
-            levels.Add("12");
-            levels.Add("13");
-            levels.Add("14");
-            levels.Add("15");
-            levels.Add("16");
-            levels.Add("17");
-            levels.Add("18");
-            levels.Add("19");
-            return levels;
+            ZoomLevel zoomLevels = new ZoomLevel();
+            return zoomLevels.Levels;
         }
 
         //test

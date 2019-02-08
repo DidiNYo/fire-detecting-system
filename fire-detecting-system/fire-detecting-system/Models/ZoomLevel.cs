@@ -10,6 +10,8 @@ namespace fire_detecting_system.Models
     {
         private string level;
 
+        public string[] Levels { get; }
+
         public string Level
         {
             get => level;
@@ -17,6 +19,16 @@ namespace fire_detecting_system.Models
             {
                 level = value;
                 OnPrоpertyChanged();
+            }
+        }
+
+        public ZoomLevel()
+        {
+            Levels = new string[19];
+
+            for (int i = 0; i < 19; i++)
+            {
+                Levels[i] = (i + 1).ToString();
             }
         }
 
