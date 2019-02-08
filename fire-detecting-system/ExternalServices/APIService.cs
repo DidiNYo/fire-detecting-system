@@ -28,7 +28,7 @@ namespace ExternalServices
 
         private Organization organization;
 
-        enum Type { Type11 = 11, Type12 = 12, Type13 = 13 }
+        enum Type { Sensor = 11, Camera = 12, WeatherStation = 13 }
 
         //  private Dictionary<string, LastMeasurement> organisationItemLastMeasurements;
 
@@ -137,9 +137,9 @@ namespace ExternalServices
             }
 
             return organization.Items.FindAll(o =>
-            o.TypeId == (int)Type.Type11 ||
-            o.TypeId == (int)Type.Type11 ||
-            o.TypeId == (int)Type.Type13);
+            o.TypeId == (int)Type.Sensor ||
+            o.TypeId == (int)Type.Camera ||
+            o.TypeId == (int)Type.WeatherStation);
         }
 
         public async Task<Dictionary<string, LastMeasurement>> GetLastMeasurementsAsync()
