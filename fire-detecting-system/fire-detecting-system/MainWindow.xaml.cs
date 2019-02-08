@@ -2,20 +2,16 @@
 using ExternalServices.Models;
 using fire_detecting_system.Models;
 using Mapsui.Geometries;
-using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
 using Mapsui.UI;
-using Mapsui.UI.Wpf;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace fire_detecting_system
 {
@@ -168,6 +164,10 @@ namespace fire_detecting_system
                         IEnumerable<string> data = currentMeasurment.Values.Select(d => d.Name);
                         cmbBoxMeasurement.ItemsSource = data;
                     }
+                    else
+                    {
+                        cmbBoxMeasurement.ItemsSource = null;
+                    }
                 }
             }
         }
@@ -220,6 +220,21 @@ namespace fire_detecting_system
 
             File.WriteAllText("AlarmRules.json", JsonConvert.SerializeObject(alarms));
             lstDefinedAlarms.Items.Refresh();
+        }
+
+        private void btn_ClickDeleteDefinedAlarm(object sender, System.Windows.RoutedEventArgs e)
+        {
+            AlarmRule selectedRule = ((Button)sender).DataContext as AlarmRule;
+            if(alarms.Contains(selectedRule) == true)
+            {
+                if(System.Windows.MessageBox.Show("Are you sure you want do delete the selected alarm rule?", "Confirmation",
+                    System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
+                {
+                    alarms.Remove(selectedRule);
+                    File.WriteAllText("AlarmRules.json", JsonConvert.SerializeObject(alarms));
+                    lstDefinedAlarms.Items.Refresh();
+                }
+            }
         }
     }
 }
