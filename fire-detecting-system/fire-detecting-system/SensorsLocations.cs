@@ -21,7 +21,7 @@ namespace fire_detecting_system
     {
         private Map map;
 
-        private List<OrganizationItem> sensors;
+        public List<OrganizationItem> Sensors { get; private set; }
 
         private Dictionary<string, Feature> features;
 
@@ -35,10 +35,8 @@ namespace fire_detecting_system
         public async Task InitializeAsync(IMapControl mapControl, APIService APIConnection)
         {
             features = new Dictionary<string, Feature>();
-            sensors = await APIConnection.GetOrganizationItemsAsync();
-
+            Sensors = await APIConnection.GetOrganizationItemsAsync();
             Dictionary<string, LastMeasurement> lastMeasurements = await APIConnection.GetLastMeasurementsAsync();
-
             map = new Map();
             mapControl.Map = CreateMap();
             AddSensorsLayer();
@@ -107,7 +105,7 @@ namespace fire_detecting_system
         //Initialize the sensors.
         private IEnumerable<IFeature> InitializeSensors()
         {
-            return sensors.Select(s =>
+            return Sensors.Select(s =>
             {
                 Feature feature = new Feature();
                 double longitude = double.Parse(s.Properties.Find(p => p.Type == "Longitude").Value, CultureInfo.InvariantCulture);
@@ -172,7 +170,7 @@ namespace fire_detecting_system
                 {
                     LabelStyle label = new LabelStyle
                     {
-                        Text = lastMeasurements[sensors.ElementAt(i++).Name].ToString(),
+                        Text = lastMeasurements[Sensors.ElementAt(i++).Name].ToString(),
                         Font = new Font { FontFamily = "Arial", Size = 13 },
                         BackColor = new Brush(Color.Black),
                         ForeColor = Color.White,

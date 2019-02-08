@@ -25,6 +25,7 @@ namespace fire_detecting_system.Models
             APIConnection = new APIService();
             Coords = new Coordinates();
             Zoom = new ZoomLevel();
+            Sensors = new SensorsLocations();
         }
     }
 }

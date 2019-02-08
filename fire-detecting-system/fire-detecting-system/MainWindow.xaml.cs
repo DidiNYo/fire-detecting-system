@@ -20,8 +20,6 @@ namespace fire_detecting_system
     {
         MainViewModel mainModel;
 
-        //SensorsLocations sensors;
-
         int numberOfClicks;
 
         IFeature clickedFeature;
@@ -29,6 +27,8 @@ namespace fire_detecting_system
         int zoomLevel;
 
         Point centerPoint;
+
+        List<string> names;
 
         public MainWindow()
         {
@@ -57,7 +57,6 @@ namespace fire_detecting_system
             mainModel.Coords.XCoordinate = (GetSettings.GetSettingsInstance.SettingsData.XCoord).ToString(CultureInfo.InvariantCulture);
             mainModel.Coords.YCoordinate = (GetSettings.GetSettingsInstance.SettingsData.YCoord).ToString(CultureInfo.InvariantCulture);
 
-            cmbBoxSensor.ItemsSource = LoadComboBoxSensorsNames();
             cmbBoxSign.ItemsSource = LoadComboBoxSign();
             cmbBoxZoomLevel.ItemsSource = LoadComboBoxZoomLevel();
         }
@@ -69,8 +68,13 @@ namespace fire_detecting_system
 
         private async void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            mainModel.Sensors = new SensorsLocations();
             await mainModel.Sensors.InitializeAsync(MainMap, mainModel.APIConnection);
+            names = new List<string>();
+            foreach (var item in mainModel.Sensors.Sensors)
+            {
+                names.Add(item.Name);
+            }
+            cmbBoxSensor.ItemsSource = names;
             mainModel.Sensors.OnUpdateCompleted += OnUpdateCompleted;
         }
 
@@ -139,32 +143,6 @@ namespace fire_detecting_system
         {
             ZoomLevel zoomLevels = new ZoomLevel();
             return zoomLevels.Levels;
-        }
-
-        //test
-        private List<string> LoadComboBoxSensorsNames()
-        {
-            List<string> names = new List<string>();
-            names.Add("Park Vitosha South");
-            names.Add("Sensor Yarebkovitsa");
-            names.Add("Chalin Valog T-1");
-            names.Add("Sensor Lisets");
-            names.Add("Chalin Valog CO2-1");
-            names.Add("Portable Camera");
-            names.Add("ASPires-Geo Camera");
-            names.Add("ASPires-Geo Weather Station");
-            names.Add("MqttTestSensor");
-            names.Add("Chalin Valog DP-1");
-            names.Add("Chalin Valog DP-2");
-            names.Add("Chalin Valog DP-3");
-            names.Add("Chalin Valog CO-1");
-            names.Add("Park Bansko");
-            names.Add("Fulda Camera");
-            names.Add("Sensor Е0072632");
-            names.Add("Sensor E0072715");
-            names.Add("Sensor E0000712");
-            names.Add("Sensor E0000713\r\n");
-            return names;
         }
 
         private List<char> LoadComboBoxSign()
