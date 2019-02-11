@@ -6,6 +6,8 @@ using IdentityModel.Client;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -140,6 +142,44 @@ namespace ExternalServices
             o.TypeId == (int)Type.Sensor ||
             o.TypeId == (int)Type.Camera ||
             o.TypeId == (int)Type.WeatherStation);
+        }
+
+        public async Task GetLastImages()
+        {
+            if (organization == null)
+            {
+                await GetOrganization();
+            }
+
+            try
+            {
+                foreach (OrganizationItem organizationItem in organization.Items)
+                {
+                    if (organizationItem.TypeId == 12)
+                    {
+                        foreach (var tag in organizationItem.Tags)
+                        {
+                            if (tag.Type == null)
+                            {
+                                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($@"http://aspires.icb.bg/files/api/files/file?TagID={tag.TagId}");
+                                request.Method = "Get";
+                                request.Headers.Add("Authorization", $"Bearer {token}");
+
+                                using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+                                using (Stream output = File.Open($@"..\..\Assets\{organizationItem.Name}_{tag.TagId}.jpg", FileMode.Create))
+                                using (Stream input = response.GetResponseStream())
+                                {
+                                    await input.CopyToAsync(output);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (WebException exception) // catch the internal server error from the API
+            {
+                Debug.Print(exception.Message);
+            }
         }
 
         public async Task<Dictionary<string, LastMeasurement>> GetLastMeasurementsAsync()

@@ -11,9 +11,10 @@ using Mapsui.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+
 
 namespace fire_detecting_system
 {
@@ -44,6 +45,7 @@ namespace fire_detecting_system
             AddSensorsLayer();
             AddLabelLayer(LastMeasurements);
             CallGetLastMeasurements(APIConnection);
+            await APIConnection.GetLastImages();
         }
 
         private void CallGetLastMeasurements(APIService APIConnection)
@@ -183,7 +185,7 @@ namespace fire_detecting_system
                         VerticalAlignment = LabelStyle.VerticalAlignmentEnum.Center,
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
                         Offset = new Offset(20, 0)
-                    };
+                    };              
                     feature.Styles.Add(label);
                     feature.Styles.Last().Enabled = false;
                     return feature;
@@ -209,6 +211,19 @@ namespace fire_detecting_system
                 Fill = null,
                 Outline = new Pen { Color = Color.Red }
             };
+        }
+
+        private static IStyle AddImageToLabel()
+        {
+            //TODO: Needs more research
+            // taken from this documentation:
+            // https://github.com/Mapsui/Mapsui/blob/master/Samples/Mapsui.Samples.Common/Maps/VariousSample.cs
+            
+            var myFile = new FileInfo(@"..\..\Assets\ASPires-Geo Camera_291.jpg");
+            
+            var bitmapId = BitmapRegistry.Instance.Register(myFile);
+            
+            return new SymbolStyle { BitmapId = bitmapId };
         }
     }
 }
