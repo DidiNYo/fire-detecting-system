@@ -155,7 +155,7 @@ namespace ExternalServices
             {
                 foreach (OrganizationItem organizationItem in organization.Items)
                 {
-                    if (organizationItem.TypeId == 12)
+                    if (organizationItem.TypeId == (int)Type.Camera)
                     {
                         foreach (var tag in organizationItem.Tags)
                         {
