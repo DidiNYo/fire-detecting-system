@@ -144,12 +144,14 @@ namespace ExternalServices
             o.TypeId == (int)Type.WeatherStation);
         }
 
-        public async Task GetLastImages()
+        public async Task GetImagesAsync()
         {
             if (organization == null)
             {
                 await GetOrganization();
             }
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             try
             {
@@ -161,15 +163,16 @@ namespace ExternalServices
                         {
                             if (tag.Type == null)
                             {
-                                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($@"http://aspires.icb.bg/files/api/files/file?TagID={tag.TagId}");
-                                request.Method = "Get";
-                                request.Headers.Add("Authorization", $"Bearer {token}");
-
-                                using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-                                using (Stream output = File.Open($@"..\..\Assets\{organizationItem.Name}_{tag.TagId}.jpg", FileMode.Create))
-                                using (Stream input = response.GetResponseStream())
+                                
+                                string path = GetConfiguration.ConfigurationInstance.ConfigurationData.HttpClient+Convert.ToString(tag.TagId);
+                                HttpResponseMessage response = await client.GetAsync($"{path}");
+                                if(response.IsSuccessStatusCode)
                                 {
-                                    await input.CopyToAsync(output);
+                                    using (Stream output = File.Open($@"..\..\Assets\{organizationItem.Name}_{tag.TagId}.jpg", FileMode.Create))
+                                    using (Stream input = await response.Content.ReadAsStreamAsync())
+                                    {
+                                        await input.CopyToAsync(output);
+                                    }
                                 }
                             }
                         }

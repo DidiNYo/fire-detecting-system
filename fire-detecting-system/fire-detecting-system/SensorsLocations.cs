@@ -45,7 +45,7 @@ namespace fire_detecting_system
             AddSensorsLayer();
             AddLabelLayer(LastMeasurements);
             CallGetLastMeasurements(APIConnection);
-            await APIConnection.GetLastImages();
+            await APIConnection.GetImagesAsync();
         }
 
         private void CallGetLastMeasurements(APIService APIConnection)

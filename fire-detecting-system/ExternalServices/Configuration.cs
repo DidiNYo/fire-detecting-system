@@ -16,6 +16,8 @@ namespace ExternalServices
 
         public string IdentityServer { get; set; }
 
+        public string HttpClient { get; set; }
+
         public int SecondsToRefresh { get; set; }
     }
 }
