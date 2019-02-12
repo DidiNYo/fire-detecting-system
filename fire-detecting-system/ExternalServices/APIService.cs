@@ -10,6 +10,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ExternalServices
@@ -168,7 +169,7 @@ namespace ExternalServices
                                 HttpResponseMessage response = await client.GetAsync($"{path}");
                                 if(response.IsSuccessStatusCode)
                                 {
-                                    using (Stream output = File.Open($@"..\..\Assets\{organizationItem.Name}_{tag.TagId}.jpg", FileMode.Create))
+                                    using (Stream output = File.Open($@"..\..\Assets\{tag.TagId}.jpg", FileMode.Create))
                                     using (Stream input = await response.Content.ReadAsStreamAsync())
                                     {
                                         await input.CopyToAsync(output);

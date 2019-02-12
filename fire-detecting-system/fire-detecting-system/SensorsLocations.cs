@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 
@@ -139,7 +140,7 @@ namespace fire_detecting_system
                 Name = "Labels",
                 IsMapInfoLayer = true,
                 DataSource = new MemoryProvider(InitializeLabels(lastMeasurements)),
-                Style = null
+                Style = null// AddImageToLabel()
             };
         }
 
@@ -170,6 +171,7 @@ namespace fire_detecting_system
         private IEnumerable<IFeature> InitializeLabels(Dictionary<string, LastMeasurement> lastMeasurements)
         {
             int i = 0;
+
             return features.Values.Select(feature =>
                 {
                     LabelStyle label = new LabelStyle
@@ -185,9 +187,13 @@ namespace fire_detecting_system
                         VerticalAlignment = LabelStyle.VerticalAlignmentEnum.Center,
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
                         Offset = new Offset(20, 0)
-                    };              
+                    };
+                    //label.BackColor.FillStyle = FillStyle.Bitmap;
+                    //label.BackColor.BitmapId = GetBitmapIdForEmbeddedResource("..\\..\\Assets\\291.jpg");
+
                     feature.Styles.Add(label);
                     feature.Styles.Last().Enabled = false;
+                    //feature.Styles.Add(AddImageToLabel());
                     return feature;
                 });
         }
@@ -213,17 +219,26 @@ namespace fire_detecting_system
             };
         }
 
-        private static IStyle AddImageToLabel()
+        // don't use an embedded resource (don't use assembly)
+        private static SymbolStyle AddImageToLabel()
         {
-            //TODO: Needs more research
-            // taken from this documentation:
-            // https://github.com/Mapsui/Mapsui/blob/master/Samples/Mapsui.Samples.Common/Maps/VariousSample.cs
-            
-            var myFile = new FileInfo(@"..\..\Assets\ASPires-Geo Camera_291.jpg");
-            
-            var bitmapId = BitmapRegistry.Instance.Register(myFile);
-            
-            return new SymbolStyle { BitmapId = bitmapId };
+            string path = "..\\..\\Assets\\291.jpg";
+            int bitmapId = GetBitmapIdForEmbeddedResource(path);
+            return new SymbolStyle { BitmapId = bitmapId, SymbolScale = 0.5, SymbolOffset = new Offset(250, -350), SymbolType = SymbolType.Bitmap };
+        }
+
+        // get image
+        private static int GetBitmapIdForEmbeddedResource(string imagePath)
+        {
+            var image = File.Open(imagePath, FileMode.Open);
+
+            return BitmapRegistry.Instance.Register(image);
+
+            // var result = BitmapRegistry.Instance.Register(image);                                             
+            // image.Close();
+            // return result;
+
+
         }
     }
 }
