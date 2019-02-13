@@ -131,7 +131,6 @@ namespace fire_detecting_system
             map.Layers.Add(labelLayer);
         }
 
-
         //Creates a layer with labels
         private MemoryLayer CreateLabelLayer(Dictionary<string, LastMeasurement> lastMeasurements)
         {
@@ -140,7 +139,7 @@ namespace fire_detecting_system
                 Name = "Labels",
                 IsMapInfoLayer = true,
                 DataSource = new MemoryProvider(InitializeLabels(lastMeasurements)),
-                Style = null// AddImageToLabel()
+                Style = null
             };
         }
 
@@ -151,6 +150,7 @@ namespace fire_detecting_system
             if (feature != null)
             {
                 feature.Styles.Last().Enabled = false;
+                feature.Styles.ElementAt(feature.Styles.Count - 2).Enabled = false;
             }
         }
 
@@ -163,6 +163,7 @@ namespace fire_detecting_system
                 if (feature != null)
                 {
                     feature.Styles.Last().Enabled = true;
+                    feature.Styles.ElementAt(feature.Styles.Count - 2).Enabled = true;
                 }
             }
         }
@@ -188,12 +189,10 @@ namespace fire_detecting_system
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
                         Offset = new Offset(20, 0)
                     };
-                    //label.BackColor.FillStyle = FillStyle.Bitmap;
-                    //label.BackColor.BitmapId = GetBitmapIdForEmbeddedResource("..\\..\\Assets\\291.jpg");
-
+                    feature.Styles.Add(AddImageToLabel());
                     feature.Styles.Add(label);
                     feature.Styles.Last().Enabled = false;
-                    //feature.Styles.Add(AddImageToLabel());
+                    feature.Styles.ElementAt(feature.Styles.Count - 2).Enabled = false;
                     return feature;
                 });
         }
@@ -220,25 +219,31 @@ namespace fire_detecting_system
         }
 
         // don't use an embedded resource (don't use assembly)
-        private static SymbolStyle AddImageToLabel()
+        private static IStyle AddImageToLabel()
         {
             string path = "..\\..\\Assets\\291.jpg";
             int bitmapId = GetBitmapIdForEmbeddedResource(path);
-            return new SymbolStyle { BitmapId = bitmapId, SymbolScale = 0.5, SymbolOffset = new Offset(250, -350), SymbolType = SymbolType.Bitmap };
+
+            return new SymbolStyle
+            {
+                BitmapId = bitmapId,
+                SymbolScale = 0.345f,
+                SymbolOffset = new Offset(400, -524),
+                SymbolType = SymbolType.Bitmap
+            };
         }
 
         // get image
         private static int GetBitmapIdForEmbeddedResource(string imagePath)
         {
-            var image = File.Open(imagePath, FileMode.Open);
 
-            return BitmapRegistry.Instance.Register(image);
+            MemoryStream imageStream = new MemoryStream();
+            using (FileStream image = File.Open(imagePath, FileMode.Open))
+            {
+                image.CopyTo(imageStream);
+            }
 
-            // var result = BitmapRegistry.Instance.Register(image);                                             
-            // image.Close();
-            // return result;
-
-
+            return BitmapRegistry.Instance.Register(imageStream);
         }
     }
 }
