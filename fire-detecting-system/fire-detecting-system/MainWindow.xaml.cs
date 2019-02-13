@@ -73,8 +73,18 @@ namespace fire_detecting_system
 
             cmbBoxSign.ItemsSource = LoadComboBoxSign();
 
-            string fileResult = File.ReadAllText("AlarmRules.json");
-            if(string.IsNullOrEmpty(fileResult) == false)
+            string fileResult;
+            if (File.Exists("AlarmRules.json") == false)
+            {
+                File.Create("AlarmRules.json");
+                fileResult = null;
+            }
+            else
+            {
+                fileResult = File.ReadAllText("AlarmRules.json");
+            }
+
+            if (string.IsNullOrEmpty(fileResult) == false)
             {
                 alarms = JsonConvert.DeserializeObject<List<AlarmRule>>(fileResult);
             }
@@ -225,9 +235,9 @@ namespace fire_detecting_system
         private void btn_ClickDeleteDefinedAlarm(object sender, System.Windows.RoutedEventArgs e)
         {
             AlarmRule selectedRule = ((Button)sender).DataContext as AlarmRule;
-            if(alarms.Contains(selectedRule) == true)
+            if (alarms.Contains(selectedRule) == true)
             {
-                if(System.Windows.MessageBox.Show("Are you sure you want do delete the selected alarm rule?", "Confirmation",
+                if (System.Windows.MessageBox.Show("Are you sure you want do delete the selected alarm rule?", "Confirmation",
                     System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
                 {
                     alarms.Remove(selectedRule);
