@@ -252,8 +252,9 @@ namespace fire_detecting_system
         {
             return new SymbolStyle
             {
-                SymbolScale = 0.2,
-                Fill = new Brush { Color = color }
+                SymbolScale = 0.6,
+                Fill = new Brush { Color = color},
+                Opacity = 0.3f
             };
         }
 
@@ -262,7 +263,7 @@ namespace fire_detecting_system
         {
             return new SymbolStyle
             {
-                SymbolScale = 0.5f,
+                SymbolScale = 0.8f,
                 Fill = null,
                 Outline = new Pen { Color = color }
             };
