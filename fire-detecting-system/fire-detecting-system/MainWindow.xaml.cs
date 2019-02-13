@@ -45,7 +45,7 @@ namespace fire_detecting_system
             DataContext = mainModel;
 
             //Subscribe for clicked left mouse button event
-            MainMap.Info += MaiMaplOnInfo;
+            MainMap.Info += MainMaplOnInfo;
 
             //Default zoom level
             cmbBoxZoomLevel.ItemsSource = LoadComboBoxZoomLevel();
@@ -97,7 +97,7 @@ namespace fire_detecting_system
         }
 
         //Show label on clicked sensor
-        private void MaiMaplOnInfo(object sender, MapInfoEventArgs args)
+        private void MainMaplOnInfo(object sender, MapInfoEventArgs args)
         {
             ++numberOfClicks;
             if (numberOfClicks == 1)
@@ -125,7 +125,6 @@ namespace fire_detecting_system
                 }
                 numberOfClicks = 0;
             }
-
         }
 
         private void Btn_ClickSaveCoords(object sender, System.Windows.RoutedEventArgs e)

@@ -53,8 +53,11 @@ namespace fire_detecting_system
             AddSensorsLayer();
             AddLabelLayer(LastMeasurements);
             InitializeImagesToCameraFeatures();
+
             CallGetLastMeasurements(APIConnection);
             await APIConnection.GetImagesAsync();
+
+            
         }
 
         private void CallGetLastMeasurements(APIService APIConnection)
@@ -127,12 +130,12 @@ namespace fire_detecting_system
                 feature["Name"] = s.Name;
                 feature.Geometry = point;
 
-                if(s.TypeId == (int)APIService.Type.Sensor)
+                if (s.TypeId == (int)APIService.Type.Sensor)
                 {
                     feature.Styles.Add(SmallDot(Color.Red));
                     feature.Styles.Add(Outline(Color.Red));
                 }
-                if(s.TypeId == (int)APIService.Type.WeatherStation)
+                if (s.TypeId == (int)APIService.Type.WeatherStation)
                 {
                     feature.Styles.Add(SmallDot(Color.Orange));
                     feature.Styles.Add(Outline(Color.Orange));
@@ -160,7 +163,7 @@ namespace fire_detecting_system
             return new MemoryLayer
             {
                 Name = "Labels",
-                IsMapInfoLayer = true,
+                IsMapInfoLayer = false,
                 DataSource = new MemoryProvider(InitializeLabels(lastMeasurements)),
                 Style = null
             };
@@ -173,10 +176,10 @@ namespace fire_detecting_system
             if (feature != null)
             {
                 feature.Styles.ElementAt(indexOfLabelStyle).Enabled = false;
-                if(feature.Styles.Count > indexOfSymbolStyle)
+                if (feature.Styles.Count > indexOfSymbolStyle)
                 {
                     feature.Styles.ElementAt(indexOfSymbolStyle).Enabled = false;
-                }               
+                }
             }
         }
 
@@ -189,10 +192,10 @@ namespace fire_detecting_system
                 if (feature != null)
                 {
                     feature.Styles.ElementAt(indexOfLabelStyle).Enabled = true;
-                    if(feature.Styles.Count > indexOfSymbolStyle)
+                    if (feature.Styles.Count > indexOfSymbolStyle)
                     {
                         feature.Styles.ElementAt(indexOfSymbolStyle).Enabled = true;
-                    }                   
+                    }
                 }
             }
         }
@@ -216,7 +219,7 @@ namespace fire_detecting_system
                         WordWrap = LabelStyle.LineBreakMode.NoWrap,
                         VerticalAlignment = LabelStyle.VerticalAlignmentEnum.Center,
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
-                        Offset = new Offset(20, 0)
+                        Offset = new Offset(25, 0)
                     };
                     feature.Styles.Add(label);
                     indexOfLabelStyle = feature.Styles.Count - 1;
@@ -273,16 +276,14 @@ namespace fire_detecting_system
             return new SymbolStyle
             {
                 BitmapId = bitmapId,
-                SymbolScale = 0.345f,
-                MaxVisible = 70,
-                SymbolOffset = new Offset(400, -524),
-                SymbolType = SymbolType.Bitmap
+                SymbolScale = 0.3,
+                SymbolOffset = new Offset(-450, 20)
             };
         }
 
         //Register and get the bitmap id of the image. 
         private static int GetBitmapId(string imagePath)
-        {         
+        {
             if (File.Exists(imagePath))
             {
                 MemoryStream imageStream = new MemoryStream();
