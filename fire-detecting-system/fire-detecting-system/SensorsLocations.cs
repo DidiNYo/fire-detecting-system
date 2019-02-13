@@ -126,8 +126,23 @@ namespace fire_detecting_system
                 Point point = SphericalMercator.FromLonLat(longitude, latitude);
                 feature["Name"] = s.Name;
                 feature.Geometry = point;
-                feature.Styles.Add(SmallRedDot());
-                feature.Styles.Add(RedOutline());
+
+                if(s.TypeId == (int)APIService.Type.Sensor)
+                {
+                    feature.Styles.Add(SmallDot(Color.Red));
+                    feature.Styles.Add(Outline(Color.Red));
+                }
+                if(s.TypeId == (int)APIService.Type.WeatherStation)
+                {
+                    feature.Styles.Add(SmallDot(Color.Orange));
+                    feature.Styles.Add(Outline(Color.Orange));
+                }
+                if (s.TypeId == (int)APIService.Type.Camera)
+                {
+                    feature.Styles.Add(SmallDot(Color.Blue));
+                    feature.Styles.Add(Outline(Color.Blue));
+                }
+
                 features.Add(s.Name, new Feature(feature));
                 return feature;
             });
@@ -230,43 +245,43 @@ namespace fire_detecting_system
         }
 
         //The sensor position is marked with small red dot.
-        private static IStyle SmallRedDot()
+        private static IStyle SmallDot(Color color)
         {
             return new SymbolStyle
             {
                 SymbolScale = 0.2,
-                Fill = new Brush { Color = Color.Red }
+                Fill = new Brush { Color = color }
             };
         }
 
         //Adding red outline to the dot.
-        private static IStyle RedOutline()
+        private static IStyle Outline(Color color)
         {
             return new SymbolStyle
             {
                 SymbolScale = 0.5f,
                 Fill = null,
-                Outline = new Pen { Color = Color.Red }
+                Outline = new Pen { Color = color }
             };
         }
 
-        // don't use an embedded resource (don't use assembly)
         private static IStyle AddImage(int id)
         {
             string path = "..\\..\\Assets\\" + id + ".jpg";
-            int bitmapId = GetBitmapIdForEmbeddedResource(path);
+            int bitmapId = GetBitmapId(path);
 
             return new SymbolStyle
             {
                 BitmapId = bitmapId,
                 SymbolScale = 0.345f,
+                MaxVisible = 70,
                 SymbolOffset = new Offset(400, -524),
                 SymbolType = SymbolType.Bitmap
             };
         }
 
-        // get image
-        private static int GetBitmapIdForEmbeddedResource(string imagePath)
+        //Register and get the bitmap id of the image. 
+        private static int GetBitmapId(string imagePath)
         {         
             if (File.Exists(imagePath))
             {
