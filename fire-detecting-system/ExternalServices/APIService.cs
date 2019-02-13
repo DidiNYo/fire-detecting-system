@@ -31,7 +31,7 @@ namespace ExternalServices
 
         private Organization organization;
 
-        enum Type { Sensor = 11, Camera = 12, WeatherStation = 13 }
+        public enum Type { Sensor = 11, Camera = 12, WeatherStation = 13 }
 
         //  private Dictionary<string, LastMeasurement> organisationItemLastMeasurements;
 

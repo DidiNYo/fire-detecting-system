@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 
@@ -31,9 +30,12 @@ namespace fire_detecting_system
 
         private ILayer labelLayer;
 
+        private int indexOfLabelStyle;
+
+        private int indexOfSymbolStyle;
+
         public SensorsLocations()
         {
-
         }
 
         public async Task InitializeAsync(IMapControl mapControl, APIService APIConnection)
@@ -41,10 +43,16 @@ namespace fire_detecting_system
             features = new Dictionary<string, Feature>();
             Sensors = await APIConnection.GetOrganizationItemsAsync();
             LastMeasurements = await APIConnection.GetLastMeasurementsAsync();
+
             map = new Map();
             mapControl.Map = CreateMap();
+
+            indexOfLabelStyle = 0;
+            indexOfSymbolStyle = 0;
+
             AddSensorsLayer();
             AddLabelLayer(LastMeasurements);
+            InitializeImagesToCameraFeatures();
             CallGetLastMeasurements(APIConnection);
             await APIConnection.GetImagesAsync();
         }
@@ -149,8 +157,11 @@ namespace fire_detecting_system
             Feature feature = features[clickedFeature["Name"] as string];
             if (feature != null)
             {
-                feature.Styles.Last().Enabled = false;
-                feature.Styles.ElementAt(feature.Styles.Count - 2).Enabled = false;
+                feature.Styles.ElementAt(indexOfLabelStyle).Enabled = false;
+                if(feature.Styles.Count > indexOfSymbolStyle)
+                {
+                    feature.Styles.ElementAt(indexOfSymbolStyle).Enabled = false;
+                }               
             }
         }
 
@@ -162,8 +173,11 @@ namespace fire_detecting_system
                 Feature feature = features[clickedFeature["Name"] as string];
                 if (feature != null)
                 {
-                    feature.Styles.Last().Enabled = true;
-                    feature.Styles.ElementAt(feature.Styles.Count - 2).Enabled = true;
+                    feature.Styles.ElementAt(indexOfLabelStyle).Enabled = true;
+                    if(feature.Styles.Count > indexOfSymbolStyle)
+                    {
+                        feature.Styles.ElementAt(indexOfSymbolStyle).Enabled = true;
+                    }                   
                 }
             }
         }
@@ -189,12 +203,30 @@ namespace fire_detecting_system
                         HorizontalAlignment = LabelStyle.HorizontalAlignmentEnum.Left,
                         Offset = new Offset(20, 0)
                     };
-                    feature.Styles.Add(AddImageToLabel());
                     feature.Styles.Add(label);
-                    feature.Styles.Last().Enabled = false;
-                    feature.Styles.ElementAt(feature.Styles.Count - 2).Enabled = false;
+                    indexOfLabelStyle = feature.Styles.Count - 1;
+                    feature.Styles.ElementAt(indexOfLabelStyle).Enabled = false;
                     return feature;
                 });
+        }
+
+        //Initialize images to the cameras.
+        private void InitializeImagesToCameraFeatures()
+        {
+            List<OrganizationItem> cameras = Sensors.FindAll(s => s.TypeId == (int)APIService.Type.Camera);
+
+            foreach (OrganizationItem item in cameras)
+            {
+                foreach (TagInfo tag in item.Tags)
+                {
+                    if (tag.Type == null)
+                    {
+                        features[item.Name].Styles.Add(AddImage(tag.TagId));
+                        indexOfSymbolStyle = features[item.Name].Styles.Count - 1;
+                        features[item.Name].Styles.ElementAt(indexOfSymbolStyle).Enabled = false;
+                    }
+                }
+            }
         }
 
         //The sensor position is marked with small red dot.
@@ -219,9 +251,9 @@ namespace fire_detecting_system
         }
 
         // don't use an embedded resource (don't use assembly)
-        private static IStyle AddImageToLabel()
+        private static IStyle AddImage(int id)
         {
-            string path = "..\\..\\Assets\\291.jpg";
+            string path = "..\\..\\Assets\\" + id + ".jpg";
             int bitmapId = GetBitmapIdForEmbeddedResource(path);
 
             return new SymbolStyle
@@ -235,15 +267,18 @@ namespace fire_detecting_system
 
         // get image
         private static int GetBitmapIdForEmbeddedResource(string imagePath)
-        {
-
-            MemoryStream imageStream = new MemoryStream();
-            using (FileStream image = File.Open(imagePath, FileMode.Open))
+        {         
+            if (File.Exists(imagePath))
             {
-                image.CopyTo(imageStream);
+                MemoryStream imageStream = new MemoryStream();
+                using (FileStream image = File.Open(imagePath, FileMode.Open))
+                {
+                    image.CopyTo(imageStream);
+                }
+                return BitmapRegistry.Instance.Register(imageStream);
             }
 
-            return BitmapRegistry.Instance.Register(imageStream);
+            return 0;
         }
     }
 }
