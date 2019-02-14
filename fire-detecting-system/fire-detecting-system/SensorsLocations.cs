@@ -93,14 +93,14 @@ namespace fire_detecting_system
                     SaveAlarms();
                     foreach (var pendingAction in pendingActionList)
                     {
-                        double currentValue = Convert.ToDouble(LastMeasurements[pendingAction.SensorName].Values.Find(c => c.Name == pendingAction.Measurement).TagItemValues[0].Value);
+                        string currentValueString = LastMeasurements[pendingAction.SensorName].Values.Find(c => c.Name == pendingAction.Measurement).TagItemValues[0].Value;
+                        double currentValue = Convert.ToDouble(currentValueString, CultureInfo.InvariantCulture);
                         if (pendingAction.predicate(currentValue))
                         {
                             //raise an alarm for sensor with name pendingAction.SensorName and measurement pendingAction.Measurement
                             RaiseNotification(pendingAction.SensorName, pendingAction.Measurement);
                         }
                     }
-
                     await Task.Delay(GetConfiguration.ConfigurationInstance.ConfigurationData.SecondsToRefresh);
                 }
             });
@@ -254,7 +254,7 @@ namespace fire_detecting_system
                     LabelStyle label = new LabelStyle
                     {
                         Text = lastMeasurements[Sensors.ElementAt(i++).Name].ToString(),
-                        Font = new Font { FontFamily = "Arial", Size = 13 },
+                        Font = new Font { FontFamily = "Helvetica Neue", Size = 13 },
                         BackColor = new Brush(Color.Black),
                         ForeColor = Color.White,
                         Opacity = 50,
