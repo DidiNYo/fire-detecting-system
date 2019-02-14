@@ -106,16 +106,22 @@ namespace fire_detecting_system
             });
         }
 
-
-        //To do 
+        //Notify user with message box and changed color of the sensor.
         public void RaiseNotification(string sensorName, string measurement)
         {
             if(features.ContainsKey(sensorName))
             {
                 Feature currentFeature = features[sensorName];
-                currentFeature.Styles.Add(SmallDot(Color.Black));
-                currentFeature.Styles.Add(Outline(Color.Black));
-            }
+                currentFeature.Styles.Add(Danger());
+
+                string message = measurement + "for sensor " + sensorName + " is with evaluated values!";
+                System.Windows.MessageBox.Show(message, "Alarm Message",
+                                                System.Windows.MessageBoxButton.OK,
+                                                System.Windows.MessageBoxImage.Exclamation,
+                                                System.Windows.MessageBoxResult.OK,
+                                                System.Windows.MessageBoxOptions.DefaultDesktopOnly);                          
+            };
+
             OnNotificationRaised?.Invoke(this, new EventArgs());
         }
 
@@ -176,8 +182,8 @@ namespace fire_detecting_system
 
                 if (s.TypeId == (int)APIService.Type.Sensor)
                 {
-                    feature.Styles.Add(SmallDot(Color.Red));
-                    feature.Styles.Add(Outline(Color.Red));
+                    feature.Styles.Add(SmallDot(Color.Green));
+                    feature.Styles.Add(Outline(Color.Green));
                 }
                 if (s.TypeId == (int)APIService.Type.WeatherStation)
                 {
@@ -313,6 +319,15 @@ namespace fire_detecting_system
             };
         }
 
+
+        private static IStyle Danger()
+        {
+            return new SymbolStyle
+            {
+                SymbolScale = 0.9f,
+                Fill = new Brush { Color = Color.Red}
+            };
+        }
         private static IStyle AddImage(int id)
         {
             string path = "..\\..\\Assets\\" + id + ".jpg";
