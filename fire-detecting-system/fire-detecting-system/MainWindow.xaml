@@ -62,10 +62,8 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-
                 </Canvas>
             </TabItem>
-            <TabItem Header="History" Padding="15,2"/>
         </TabControl>
         <!--Main Tabs-->
     </Grid>
