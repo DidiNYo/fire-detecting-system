@@ -42,7 +42,7 @@ namespace fire_detecting_system
 
         private List<PendingAction> pendingActionList;
 
-        private HashSet<AlarmRule> activeAlarms;
+        private HashSet<ActiveAlarm> activeAlarms;
 
         public SensorsLocations()
         {
@@ -51,7 +51,7 @@ namespace fire_detecting_system
         public async Task InitializeAsync(IMapControl mapControl, APIService APIConnection)
         {
             features = new Dictionary<string, Feature>();
-            activeAlarms = new HashSet<AlarmRule>();
+            activeAlarms = new HashSet<ActiveAlarm>();
             Sensors = await APIConnection.GetOrganizationItemsAsync();
             LastMeasurements = await APIConnection.GetLastMeasurementsAsync();
 
@@ -100,8 +100,9 @@ namespace fire_detecting_system
                         double currentValue = Convert.ToDouble(currentValueString, CultureInfo.InvariantCulture);
                         if (pendingAction.predicate(currentValue))
                         {
-                            AlarmRule currentAlarm = new AlarmRule(pendingAction.SensorName, pendingAction.Measurement, "", currentValue);
+                            ActiveAlarm currentAlarm = new ActiveAlarm(pendingAction.SensorName, pendingAction.Measurement, currentValue);
                             activeAlarms.Add(currentAlarm);
+                            
                             //raise an alarm for sensor with name pendingAction.SensorName and measurement pendingAction.Measurement
                             RaiseNotification(pendingAction.SensorName, pendingAction.Measurement);
                         }
