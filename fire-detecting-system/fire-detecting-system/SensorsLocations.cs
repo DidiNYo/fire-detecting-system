@@ -22,6 +22,10 @@ namespace fire_detecting_system
 {
     public class SensorsLocations : ObservableObject
     {
+        public event EventHandler OnUpdateCompleted;
+
+        public event EventHandler OnNotificationRaised;
+
         private Map map;
 
         public List<OrganizationItem> Sensors { get; private set; }
@@ -102,13 +106,19 @@ namespace fire_detecting_system
             });
         }
 
+
         //To do 
         public void RaiseNotification(string sensorName, string measurement)
         {
-
+            if(features.ContainsKey(sensorName))
+            {
+                Feature currentFeature = features[sensorName];
+                currentFeature.Styles.Add(SmallDot(Color.Black));
+                currentFeature.Styles.Add(Outline(Color.Black));
+            }
+            OnNotificationRaised?.Invoke(this, new EventArgs());
         }
 
-        public event EventHandler OnUpdateCompleted;
 
         public void UpdateLabels(IEnumerable<LastMeasurement> measurements)
         {

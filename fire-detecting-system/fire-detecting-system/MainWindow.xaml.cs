@@ -64,9 +64,17 @@ namespace fire_detecting_system
             MainMap.RefreshData();
         }
 
+        private void OnNotificationRaised(object sender, EventArgs e)
+        {
+           MainMap.Refresh();
+        }
+
         private async void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
             await mainModel.Sensors.InitializeAsync(MainMap, mainModel.APIConnection);
+            mainModel.Sensors.OnUpdateCompleted += OnUpdateCompleted;
+            mainModel.Sensors.OnNotificationRaised += OnNotificationRaised;
+
 
             IEnumerable<string> names = mainModel.Sensors.Sensors.Select(n => n.Name);
             cmbBoxSensor.ItemsSource = names;
@@ -93,7 +101,6 @@ namespace fire_detecting_system
                 alarms = new List<AlarmRule>();
             }
             lstDefinedAlarms.ItemsSource = alarms;
-            mainModel.Sensors.OnUpdateCompleted += OnUpdateCompleted;
         }
 
         //Show label on clicked sensor
