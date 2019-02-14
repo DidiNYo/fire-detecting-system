@@ -112,14 +112,17 @@ namespace fire_detecting_system
             if(features.ContainsKey(sensorName))
             {
                 Feature currentFeature = features[sensorName];
-                currentFeature.Styles.Add(Danger());
+                if (!currentFeature.Styles.Contains(Danger()))
+                {
+                    currentFeature.Styles.Add(Danger());
 
-                string message = measurement + "for sensor " + sensorName + " is with evaluated values!";
-                System.Windows.MessageBox.Show(message, "Alarm Message",
-                                                System.Windows.MessageBoxButton.OK,
-                                                System.Windows.MessageBoxImage.Exclamation,
-                                                System.Windows.MessageBoxResult.OK,
-                                                System.Windows.MessageBoxOptions.DefaultDesktopOnly);                          
+                    string message = measurement + "for sensor " + sensorName + " is with evaluated values!";
+                    System.Windows.MessageBox.Show(message, "Alarm Message",
+                                                    System.Windows.MessageBoxButton.OK,
+                                                    System.Windows.MessageBoxImage.Exclamation,
+                                                    System.Windows.MessageBoxResult.OK,
+                                                    System.Windows.MessageBoxOptions.DefaultDesktopOnly);
+                }
             };
 
             OnNotificationRaised?.Invoke(this, new EventArgs());
