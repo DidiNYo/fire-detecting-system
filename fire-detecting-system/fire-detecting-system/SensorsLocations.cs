@@ -42,7 +42,7 @@ namespace fire_detecting_system
 
         private List<PendingAction> pendingActionList;
 
-        private HashSet<ActiveAlarm> activeAlarms;
+        public HashSet<ActiveAlarm> ActiveAlarms { get; private set; }
 
         public SensorsLocations()
         {
@@ -51,7 +51,7 @@ namespace fire_detecting_system
         public async Task InitializeAsync(IMapControl mapControl, APIService APIConnection)
         {
             features = new Dictionary<string, Feature>();
-            activeAlarms = new HashSet<ActiveAlarm>();
+            LoadHistory();
             Sensors = await APIConnection.GetOrganizationItemsAsync();
             LastMeasurements = await APIConnection.GetLastMeasurementsAsync();
 
@@ -68,9 +68,30 @@ namespace fire_detecting_system
             CallGetLastMeasurements(APIConnection);
             await APIConnection.GetImagesAsync();
 
-            
-            //for testing
             CheckRulesToRaiseAnAlarm();
+        }
+
+        private void LoadHistory()
+        {
+            string historyFile;
+            if (File.Exists("History.json") == false)
+            {
+                File.Create("History.json");
+                historyFile = null;
+            }
+            else
+            {
+                historyFile = File.ReadAllText("AlarmRules.json");
+            }
+
+            if (string.IsNullOrEmpty(historyFile) == false)
+            {
+                ActiveAlarms = JsonConvert.DeserializeObject<HashSet<ActiveAlarm>>(historyFile);
+            }
+            else
+            {
+                ActiveAlarms = new HashSet<ActiveAlarm>();
+            }
         }
 
         private void CallGetLastMeasurements(APIService APIConnection)
@@ -94,14 +115,16 @@ namespace fire_detecting_system
                 while (true)
                 {
                     SaveAlarms();
-                    foreach (var pendingAction in pendingActionList)
+                    foreach (PendingAction pendingAction in pendingActionList)
                     {
                         string currentValueString = LastMeasurements[pendingAction.SensorName].Values.Find(c => c.Name == pendingAction.Measurement).TagItemValues[0].Value;
                         double currentValue = Convert.ToDouble(currentValueString, CultureInfo.InvariantCulture);
                         if (pendingAction.predicate(currentValue))
                         {
-                            ActiveAlarm currentAlarm = new ActiveAlarm(pendingAction.SensorName, pendingAction.Measurement, currentValue);
-                            activeAlarms.Add(currentAlarm);
+                            ActiveAlarm currentAlarm = new ActiveAlarm(pendingAction.SensorName, pendingAction.Measurement, currentValue, DateTime.Now);
+                            ActiveAlarms.Add(currentAlarm);
+
+                            File.WriteAllText("History.json", JsonConvert.SerializeObject(ActiveAlarms));
                             
                             //raise an alarm for sensor with name pendingAction.SensorName and measurement pendingAction.Measurement
                             RaiseNotification(pendingAction.SensorName, pendingAction.Measurement);
