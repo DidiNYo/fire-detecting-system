@@ -167,7 +167,7 @@ namespace fire_detecting_system
             MainTabs.SelectedIndex = 0;
         }
 
-        private void cmbBoxSensorName_SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
+        private void CmbBoxSensorName_SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
         {
             if (cmbBoxSensor.SelectedValue != null)
             {
@@ -200,7 +200,7 @@ namespace fire_detecting_system
             return signs;
         }
 
-        private void btn_ClickClear(object sender, System.Windows.RoutedEventArgs e)
+        private void Btn_ClickClear(object sender, System.Windows.RoutedEventArgs e)
         {
             cmbBoxSensor.SelectedItem = null;
             cmbBoxMeasurement.SelectedItem = null;
@@ -221,7 +221,7 @@ namespace fire_detecting_system
             File.WriteAllText("Settings.json", JsonConvert.SerializeObject(changedSettings));
         }
 
-        private void btn_ClickAddNewAlarm(object sender, System.Windows.RoutedEventArgs e)
+        private void Btn_ClickAddNewAlarm(object sender, System.Windows.RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(mainModel.Rule.SensorName) == false &&
                 string.IsNullOrEmpty(mainModel.Rule.MeasurementType) == false &&
@@ -238,7 +238,7 @@ namespace fire_detecting_system
             lstDefinedAlarms.Items.Refresh();
         }
 
-        private void btn_ClickDeleteDefinedAlarm(object sender, System.Windows.RoutedEventArgs e)
+        private void Btn_ClickDeleteDefinedAlarm(object sender, System.Windows.RoutedEventArgs e)
         {
             AlarmRule selectedRule = ((Button)sender).DataContext as AlarmRule;
             if (alarms.Contains(selectedRule) == true)
