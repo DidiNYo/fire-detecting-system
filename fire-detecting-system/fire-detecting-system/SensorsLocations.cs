@@ -127,7 +127,7 @@ namespace fire_detecting_system
                 if (features.ContainsKey(measurement.OrganizationItemName))
                 {
                     Feature currentFeature = features[measurement.OrganizationItemName];
-                    (currentFeature.Styles.Last() as LabelStyle).Text = measurement.ToString();
+                    (currentFeature.Styles.ElementAt(indexOfLabelStyle) as LabelStyle).Text = measurement.ToString();
                 }
             }
             OnUpdateCompleted?.Invoke(this, new EventArgs());
