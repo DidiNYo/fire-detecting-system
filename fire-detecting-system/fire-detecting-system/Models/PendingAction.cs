@@ -11,7 +11,7 @@ namespace fire_detecting_system.Models
     {
         public string SensorName { get; set; }
 
-        public string Measurements { get; set; }
+        public string Measurement { get; set; }
 
         public Predicate<double> predicate;
     }

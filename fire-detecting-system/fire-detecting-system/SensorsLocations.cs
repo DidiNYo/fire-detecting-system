@@ -61,9 +61,9 @@ namespace fire_detecting_system
             CallGetLastMeasurements(APIConnection);
             await APIConnection.GetImagesAsync();
 
-            pendingActionList = new List<PendingAction>();
+            
             //for testing
-            DefineAlarms();
+            CheckRulesToRaiseAnAlarm();
         }
 
         private void CallGetLastMeasurements(APIService APIConnection)
@@ -78,6 +78,34 @@ namespace fire_detecting_system
                       await Task.Delay(GetConfiguration.ConfigurationInstance.ConfigurationData.SecondsToRefresh);
                   }
               });
+        }
+
+        private void CheckRulesToRaiseAnAlarm()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    SaveAlarms();
+                    foreach (var pendingAction in pendingActionList)
+                    {
+                        double currentValue = Convert.ToDouble(LastMeasurements[pendingAction.SensorName].Values.Find(c => c.Name == pendingAction.Measurement).TagItemValues[0].Value);
+                        if (pendingAction.predicate(currentValue))
+                        {
+                            //raise an alarm for sensor with name pendingAction.SensorName and measurement pendingAction.Measurement
+                            RaiseNotification(pendingAction.SensorName, pendingAction.Measurement);
+                        }
+                    }
+
+                    await Task.Delay(GetConfiguration.ConfigurationInstance.ConfigurationData.SecondsToRefresh);
+                }
+            });
+        }
+
+        //To do 
+        public void RaiseNotification(string sensorName, string measurement)
+        {
+
         }
 
         public event EventHandler OnUpdateCompleted;
@@ -304,16 +332,20 @@ namespace fire_detecting_system
             return 0;
         }
 
-        private void DefineAlarms()
+
+        //Save alarm rules in a list 
+        private void SaveAlarms()
         {
-            List<AlarmRule> definedAlarms = ReadAlarmsFromJSON();
+            List<AlarmRule> definedAlarms = new List<AlarmRule>();
+            pendingActionList = new List<PendingAction>();
+            definedAlarms = ReadAlarmsFromJSON();
 
             foreach (var item in definedAlarms)
             {
                 PendingAction newPendingAction = new PendingAction
                 {
                     SensorName = item.SensorName,
-                    Measurements = item.MeasurementType
+                    Measurement = item.MeasurementType
                 };
 
                 switch (item.Sign)
@@ -339,6 +371,7 @@ namespace fire_detecting_system
             }
         }
 
+        //Read alarm rules from .json
         private List<AlarmRule> ReadAlarmsFromJSON()
         {
             using (StreamReader r = new StreamReader("AlarmRules.json"))
