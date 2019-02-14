@@ -133,6 +133,7 @@
     <Compile Include="Models\AlarmRule.cs" />
     <Compile Include="Models\MainViewModel.cs" />
     <Compile Include="Models\Coordinates.cs" />
+    <Compile Include="Models\PendingAction.cs" />
     <Compile Include="Models\ZoomLevel.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

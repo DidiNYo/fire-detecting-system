@@ -1,5 +1,7 @@
-﻿using ExternalServices;
+﻿using Newtonsoft.Json;
+using ExternalServices;
 using ExternalServices.Models;
+using fire_detecting_system.Models;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -34,6 +36,8 @@ namespace fire_detecting_system
 
         private int indexOfSymbolStyle;
 
+        private List<PendingAction> pendingActionList;
+
         public SensorsLocations()
         {
         }
@@ -57,7 +61,9 @@ namespace fire_detecting_system
             CallGetLastMeasurements(APIConnection);
             await APIConnection.GetImagesAsync();
 
-            
+            pendingActionList = new List<PendingAction>();
+            //for testing
+            DefineAlarms();
         }
 
         private void CallGetLastMeasurements(APIService APIConnection)
@@ -296,6 +302,50 @@ namespace fire_detecting_system
             }
 
             return 0;
+        }
+
+        private void DefineAlarms()
+        {
+            List<AlarmRule> definedAlarms = ReadAlarmsFromJSON();
+
+            foreach (var item in definedAlarms)
+            {
+                PendingAction newPendingAction = new PendingAction
+                {
+                    SensorName = item.SensorName,
+                    Measurements = item.MeasurementType
+                };
+
+                switch (item.Sign)
+                {
+                    case ">":
+                        newPendingAction.predicate = c => c > item.Value;
+                        break;
+                    case "<":
+                        newPendingAction.predicate = c => c < item.Value;
+                        break;
+                    case ">=":
+                        newPendingAction.predicate = c => c >= item.Value;
+                        break;
+                    case "<=":
+                        newPendingAction.predicate = c => c <= item.Value;
+                        break;
+                    case "=":
+                        newPendingAction.predicate = c => c == item.Value;
+                        break;
+                }
+
+                pendingActionList.Add(newPendingAction);
+            }
+        }
+
+        private List<AlarmRule> ReadAlarmsFromJSON()
+        {
+            using (StreamReader r = new StreamReader("AlarmRules.json"))
+            {
+                string json = r.ReadToEnd();
+                return JsonConvert.DeserializeObject<List<AlarmRule>>(json);
+            }
         }
     }
 }
